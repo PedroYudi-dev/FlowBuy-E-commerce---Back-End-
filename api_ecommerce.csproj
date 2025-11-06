@@ -8,6 +8,14 @@
 
   <ItemGroup>
     <Compile Remove="Domain\DTOs\Class.cs" />
+    <Compile Remove="Migrations\20251103001133_UpdateVariationProduct.cs" />
+    <Compile Remove="Migrations\20251103001133_UpdateVariationProduct.Designer.cs" />
+    <Compile Remove="Migrations\20251103020041_UpdateVariationProductPart4.cs" />
+    <Compile Remove="Migrations\20251103020041_UpdateVariationProductPart4.Designer.cs" />
+    <Compile Remove="Migrations\20251103184021_UpdateStockInProductToVariation.cs" />
+    <Compile Remove="Migrations\20251103184021_UpdateStockInProductToVariation.Designer.cs" />
+    <Compile Remove="Migrations\20251105202322_UpdateImageMainPart2.cs" />
+    <Compile Remove="Migrations\20251105202322_UpdateImageMainPart2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

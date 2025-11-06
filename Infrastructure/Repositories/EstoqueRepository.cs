@@ -47,28 +47,20 @@ namespace api_ecommerce.Infrastructure.Repositories
             return _context.Estoques.AsNoTracking().ToList();
         }
 
-        public Estoque GetByProdutoId(int produtoId)
+        public Estoque? GetByProdutoId(int produtoId)
         {
-            var estoque = _context.Estoques
-                .AsNoTracking()
-                .FirstOrDefault(e => e.ProdutoId == produtoId);
-
-            if (estoque == null)
-                throw new KeyNotFoundException($"Estoque para produtoId {produtoId} não encontrado.");
-
-            return estoque;
+            return _context.Estoques.FirstOrDefault(e => e.ProdutoId == produtoId);
         }
-
-        public void Add(Estoque estoque)
+        public Estoque Add(Estoque estoque)
         {
             _context.Estoques.Add(estoque);
             _context.SaveChanges();
+            return estoque;
         }
 
         public void Update(Estoque estoque)
         {
-            _context.Estoques.Attach(estoque);
-            _context.Entry(estoque).State = EntityState.Modified;
+            _context.Estoques.Update(estoque);
             _context.SaveChanges();
         }
 

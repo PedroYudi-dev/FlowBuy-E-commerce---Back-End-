@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251103184021_UpdateStockInProductToVariation")]
+    partial class UpdateStockInProductToVariation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,20 +208,11 @@ namespace api_ecommerce.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CorCodigoPrincipal")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CorNomePrincipal")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("FornecedorId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ImagemPrincipalBase64")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Marca")
                         .IsRequired()

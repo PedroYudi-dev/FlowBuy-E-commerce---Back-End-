@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api_ecommerce.Domain.Entities
 {
@@ -23,5 +24,8 @@ namespace api_ecommerce.Domain.Entities
 
         // Data de criação do registro:
         public DateTime Data { get; set; } = DateTime.UtcNow;
+
+        [ForeignKey("ProdutoId")]
+        public Produto Produto { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using api_ecommerce.Domain.Interfaces.Services;
 using api_ecommerce.Domain.Services;
 using api_ecommerce.Infrastructure.Repositories;
 using api_ecommerce.Infrastructure.Data.Context;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddControllers()
+    .AddJsonOptions(jsonResp =>
+    {
+        jsonResp.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+
+        jsonResp.JsonSerializerOptions.WriteIndented = true;
+    });
+
 // Injeção de dependência dos repositórios:
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IClienteRepository, ClienteRepository>();
@@ -37,6 +46,7 @@ builder.Services.AddTransient<IVendaRepository, VendaRepository>();
 builder.Services.AddScoped<IVendaService, VendaService>();
 builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
 builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+builder.Services.AddScoped<ProdutoService>();
 
 // Configuração do DbContext com MySQL:
 builder.Services.AddDbContext<EcommerceDbContext>(options =>

@@ -317,22 +317,6 @@
   },
   {
     "ContainingType": "api_ecommerce.Controllers.ProdutoController",
-    "Method": "Create",
-    "RelativePath": "api/Produto",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "produtoDto",
-        "Type": "api_ecommerce.Domain.DTOs.ProdutoDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "api_ecommerce.Controllers.ProdutoController",
     "Method": "GetById",
     "RelativePath": "api/Produto/{id}",
     "HttpMethod": "GET",
@@ -379,6 +363,22 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.ProdutoController",
+    "Method": "CreateComVariacoes",
+    "RelativePath": "api/Produto/Create-Product",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "api_ecommerce.Domain.DTOs.ProdutoComVariacoesDTO",
         "IsRequired": true
       }
     ],

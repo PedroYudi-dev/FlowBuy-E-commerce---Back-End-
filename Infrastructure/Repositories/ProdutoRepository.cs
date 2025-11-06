@@ -17,34 +17,31 @@ namespace api_ecommerce.Infrastructure.Repositories
             _context = context;
         }
 
-        public IEnumerable<Produto> GetAll()
+        public IQueryable<Produto> GetAll()
         {
-            return _context.Produtos.AsNoTracking().ToList();
+            return _context.Produtos
+            .Include(p => p.Variacoes)
+            .Include(p => p.Estoque);
         }
 
         public Produto GetById(int id)
         {
-            var produto = _context.Produtos
-                //.Include(p => p.Relacionamentos) // Se tiver relacionamentos, inclua aqui
-                .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
-
-            if (produto == null)
-                throw new KeyNotFoundException($"Produto com id {id} não encontrado.");
-
-            return produto;
+            return _context.Produtos
+                        .Include(p => p.Variacoes)
+                        .Include(p => p.Estoque)
+                        .FirstOrDefault(p => p.Id == id);
         }
 
-        public void Add(Produto produto)
+        public Produto Add(Produto produto)
         {
             _context.Produtos.Add(produto);
             _context.SaveChanges();
+            return produto;
         }
 
         public void Update(Produto produto)
         {
-            _context.Produtos.Attach(produto);
-            _context.Entry(produto).State = EntityState.Modified;
+            _context.Produtos.Update(produto);
             _context.SaveChanges();
         }
 

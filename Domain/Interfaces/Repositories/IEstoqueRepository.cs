@@ -7,8 +7,8 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
     public interface IEstoqueRepository
     {
         IEnumerable<Estoque> GetAll();
-        Estoque GetByProdutoId(int produtoId);
-        void Add(Estoque estoque);
+        Estoque? GetByProdutoId(int produtoId);
+        Estoque Add(Estoque estoque);
         void Update(Estoque estoque);
         void Delete(int produtoId);
 

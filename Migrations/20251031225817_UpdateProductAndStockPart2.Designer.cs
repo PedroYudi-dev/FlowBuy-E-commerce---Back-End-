@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251031225817_UpdateProductAndStockPart2")]
+    partial class UpdateProductAndStockPart2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,19 +208,37 @@ namespace api_ecommerce.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CorCodigoPrincipal")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CorNomePrincipal")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int>("FornecedorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagemPrincipalBase64")
+                    b.Property<string>("Imagem1_base64")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem1_cor_codigo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem1_cor_nome")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem2_base64")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem2_cor_codigo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem2_cor_nome")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem3_base64")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem3_cor_codigo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Imagem3_cor_nome")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Marca")
@@ -235,37 +256,6 @@ namespace api_ecommerce.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Produtos");
-                });
-
-            modelBuilder.Entity("api_ecommerce.Domain.Entities.ProdutoVariacao", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CorCodigo")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CorNome")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ImagemBase64")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("ProdutoVariacoes");
                 });
 
             modelBuilder.Entity("api_ecommerce.Domain.Entities.User", b =>
@@ -392,17 +382,6 @@ namespace api_ecommerce.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("api_ecommerce.Domain.Entities.ProdutoVariacao", b =>
-                {
-                    b.HasOne("api_ecommerce.Domain.Entities.Produto", "Produto")
-                        .WithMany("Variacoes")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Produto");
-                });
-
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Venda", b =>
                 {
                     b.HasOne("api_ecommerce.Domain.Entities.Cliente", "Cliente")
@@ -444,8 +423,6 @@ namespace api_ecommerce.Migrations
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Produto", b =>
                 {
                     b.Navigation("Estoque");
-
-                    b.Navigation("Variacoes");
 
                     b.Navigation("Vendas");
                 });

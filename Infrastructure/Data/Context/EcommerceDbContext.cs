@@ -14,6 +14,7 @@ namespace api_ecommerce.Infrastructure.Data.Context
         public DbSet<Venda> Vendas { get; set; }
         public DbSet<Carrinho> Carrinhos { get; set; }
         public DbSet<CarrinhoItem> CarrinhosItens { get; set; }
+        public DbSet<ProdutoVariacao> ProdutoVariacoes { get; set; }
 
         public EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : base(options) { }
 
@@ -71,6 +72,12 @@ namespace api_ecommerce.Infrastructure.Data.Context
                 .HasOne(i => i.Carrinho)
                 .WithMany(c => c.Itens)
                 .HasForeignKey(i => i.CarrinhoId);
+
+            modelBuilder.Entity<Produto>()
+                .HasOne(p => p.Estoque)
+                .WithOne(e => e.Produto)
+                .HasForeignKey<Estoque>(e => e.ProdutoId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Valores padrão
             modelBuilder.Entity<Carrinho>()

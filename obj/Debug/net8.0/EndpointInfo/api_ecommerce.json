@@ -509,35 +509,6 @@
             "description": "OK"
           }
         }
-      },
-      "post": {
-        "tags": [
-          "Produto"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProdutoDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProdutoDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProdutoDTO"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
     "/api/Produto/{id}": {
@@ -617,6 +588,37 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Produto/Create-Product": {
+      "post": {
+        "tags": [
+          "Produto"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesDTO"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK"
@@ -877,6 +879,58 @@
         },
         "additionalProperties": false
       },
+      "ProdutoComVariacoesDTO": {
+        "required": [
+          "fornecedorId",
+          "nome",
+          "preco"
+        ],
+        "type": "object",
+        "properties": {
+          "nome": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "preco": {
+            "type": "number",
+            "format": "double"
+          },
+          "fornecedorId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "marca": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidadeInicial": {
+            "maximum": 2147483647,
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "imagemPrincipalBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "corNomePrincipal": {
+            "type": "string",
+            "nullable": true
+          },
+          "corCodigoPrincipal": {
+            "type": "string",
+            "nullable": true
+          },
+          "variacoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProdutoVariacaoDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ProdutoDTO": {
         "required": [
           "fornecedorId",
@@ -936,6 +990,24 @@
             "nullable": true
           },
           "imagem3_cor_codigo": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProdutoVariacaoDTO": {
+        "type": "object",
+        "properties": {
+          "corNome": {
+            "type": "string",
+            "nullable": true
+          },
+          "corCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagemBase64": {
             "type": "string",
             "nullable": true
           }

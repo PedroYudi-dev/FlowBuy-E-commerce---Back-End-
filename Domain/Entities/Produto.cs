@@ -32,17 +32,11 @@ namespace api_ecommerce.Domain.Entities
         // Data de criação do registro:
         public DateTime Data { get; set; } = DateTime.UtcNow;
 
-        // Imagens:
-        public string? Imagem1_base64 { get; set; }
-        public string? Imagem1_cor_nome { get; set; }
-        public string? Imagem1_cor_codigo { get; set; }
+        public string? ImagemPrincipalBase64 { get; set; }
+        public string? CorNomePrincipal { get; set; }
+        public string? CorCodigoPrincipal { get; set; }
+        public ICollection<ProdutoVariacao> Variacoes { get; set; } = new List<ProdutoVariacao>();
 
-        public string? Imagem2_base64 { get; set; }
-        public string? Imagem2_cor_nome { get; set; }
-        public string? Imagem2_cor_codigo { get; set; }
-
-        public string? Imagem3_base64 { get; set; }
-        public string? Imagem3_cor_nome { get; set; }
-        public string? Imagem3_cor_codigo { get; set; }
+        public Estoque? Estoque { get; set; }
     }
 }

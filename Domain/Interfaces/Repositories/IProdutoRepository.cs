@@ -6,9 +6,9 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
 {
     public interface IProdutoRepository
     {
-        IEnumerable<Produto> GetAll();
-        Produto GetById(int id);
-        void Add(Produto produto);
+        IQueryable<Produto> GetAll();
+        Produto? GetById(int id);
+        Produto Add(Produto produto);
         void Update(Produto produto);
         void Delete(int id);
         bool ExisteProduto(int id);
