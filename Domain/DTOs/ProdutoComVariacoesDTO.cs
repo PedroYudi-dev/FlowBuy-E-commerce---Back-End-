@@ -16,9 +16,6 @@ namespace api_ecommerce.Domain.DTOs
         public string? Descricao { get; set; }
         public string? Marca { get; set; }
 
-        [Range(0, int.MaxValue)]
-        public int QuantidadeInicial { get; set; }
-
         public string? ImagemPrincipalBase64 { get; set; }
         public string? CorNomePrincipal { get; set; }
         public string? CorCodigoPrincipal { get; set; }
@@ -31,5 +28,7 @@ namespace api_ecommerce.Domain.DTOs
         public string CorNome { get; set; }
         public string? CorCodigo { get; set; }
         public string? ImagemBase64 { get; set; }
+        public int QuantidadeEstoque { get; set; }
+        public decimal Preco { get; set; }
     }
 }

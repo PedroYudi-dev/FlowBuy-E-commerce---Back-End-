@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251109220243_AdicionandoEstoqueVariaçõesparte4")]
+    partial class AdicionandoEstoqueVariaçõesparte4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,7 +142,7 @@ namespace api_ecommerce.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("ProdutoId")
+                    b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ProdutoVariacaoId")
@@ -267,9 +270,6 @@ namespace api_ecommerce.Migrations
                     b.Property<string>("ImagemBase64")
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
@@ -388,7 +388,8 @@ namespace api_ecommerce.Migrations
                     b.HasOne("api_ecommerce.Domain.Entities.Produto", "Produto")
                         .WithOne("Estoque")
                         .HasForeignKey("api_ecommerce.Domain.Entities.Estoque", "ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("api_ecommerce.Domain.Entities.ProdutoVariacao", "ProdutoVariacao")
                         .WithOne("Estoque")

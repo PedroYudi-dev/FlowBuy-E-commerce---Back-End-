@@ -113,18 +113,20 @@ namespace api_ecommerce.Controllers
                 {
                     criado.Id,
                     criado.Nome,
-                    criado.Preco,
+                    PrecoPrincipal = criado.Preco,
                     criado.Marca,
                     criado.Data,
                     criado.ImagemPrincipalBase64,
                     criado.CorNomePrincipal,
                     criado.CorCodigoPrincipal,
-                    QuantidadeDisponivel = criado.Estoque?.QuantidadeDisponivel ?? 0,
+                    EstoqueTotal = criado.Variacoes.Sum(v => v.Estoque?.QuantidadeDisponivel ?? 0),
                     Variacoes = criado.Variacoes.Select(v => new
                     {
                         v.CorNome,
                         v.CorCodigo,
-                        v.ImagemBase64
+                        v.Preco,
+                        v.ImagemBase64,
+                        QuantidadeDisponivel = v.Estoque?.QuantidadeDisponivel ?? 0
                     })
                 };
 

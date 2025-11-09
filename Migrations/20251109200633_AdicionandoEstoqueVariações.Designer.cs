@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251109200633_AdicionandoEstoqueVariações")]
+    partial class AdicionandoEstoqueVariações
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,10 +142,7 @@ namespace api_ecommerce.Migrations
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProdutoVariacaoId")
+                    b.Property<int>("ProdutoId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantidadeDisponivel")
@@ -154,9 +154,6 @@ namespace api_ecommerce.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProdutoId")
-                        .IsUnique();
-
-                    b.HasIndex("ProdutoVariacaoId")
                         .IsUnique();
 
                     b.ToTable("Estoques");
@@ -266,9 +263,6 @@ namespace api_ecommerce.Migrations
 
                     b.Property<string>("ImagemBase64")
                         .HasColumnType("longtext");
-
-                    b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("ProdutoId")
                         .HasColumnType("int");
@@ -388,16 +382,10 @@ namespace api_ecommerce.Migrations
                     b.HasOne("api_ecommerce.Domain.Entities.Produto", "Produto")
                         .WithOne("Estoque")
                         .HasForeignKey("api_ecommerce.Domain.Entities.Estoque", "ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("api_ecommerce.Domain.Entities.ProdutoVariacao", "ProdutoVariacao")
-                        .WithOne("Estoque")
-                        .HasForeignKey("api_ecommerce.Domain.Entities.Estoque", "ProdutoVariacaoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Produto");
-
-                    b.Navigation("ProdutoVariacao");
                 });
 
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Fornecedor", b =>
@@ -466,11 +454,6 @@ namespace api_ecommerce.Migrations
                     b.Navigation("Variacoes");
 
                     b.Navigation("Vendas");
-                });
-
-            modelBuilder.Entity("api_ecommerce.Domain.Entities.ProdutoVariacao", b =>
-                {
-                    b.Navigation("Estoque");
                 });
 #pragma warning restore 612, 618
         }

@@ -58,48 +58,61 @@ namespace api_ecommerce.Domain.Services
 
         public Produto CriarProdutoComVariacoesEEstoque(ProdutoComVariacoesDTO dto)
         {
-            var produto = new Produto
-            {
-                Nome = dto.Nome,
-                Preco = dto.Preco,
-                Marca = dto.Marca,
-                Descricao = dto.Descricao,
-                FornecedorId = dto.FornecedorId,
-                Data = DateTime.UtcNow,
-                ImagemPrincipalBase64 = dto.ImagemPrincipalBase64,
-                CorNomePrincipal = dto.CorNomePrincipal,
-                CorCodigoPrincipal = dto.CorCodigoPrincipal
-            };
+            using var transaction = _context.Database.BeginTransaction();
 
-            // Adiciona variações
-            if (dto.Variacoes != null && dto.Variacoes.Any())
+            try
             {
+                // 🔹 Cria o produto base
+                var produto = new Produto
+                {
+                    Nome = dto.Nome,
+                    Preco = dto.Variacoes[0].Preco,
+                    Marca = dto.Marca,
+                    Descricao = dto.Descricao,
+                    FornecedorId = dto.FornecedorId,
+                    Data = DateTime.UtcNow,
+                    ImagemPrincipalBase64 = dto.ImagemPrincipalBase64,
+                    CorNomePrincipal = dto.CorNomePrincipal,
+                    CorCodigoPrincipal = dto.CorCodigoPrincipal,
+                };
+
+                // 🔹 Adiciona variações com estoque próprio
                 foreach (var variacaoDto in dto.Variacoes)
                 {
-                    produto.Variacoes.Add(new ProdutoVariacao
+                    var variacao = new ProdutoVariacao
                     {
                         CorNome = variacaoDto.CorNome,
                         CorCodigo = variacaoDto.CorCodigo,
-                        ImagemBase64 = variacaoDto.ImagemBase64
-                    });
+                        ImagemBase64 = variacaoDto.ImagemBase64,
+                        Preco = variacaoDto.Preco,
+                    };
+
+                    // cria o estoque e atribui a variacao
+                    variacao.Estoque = new Estoque
+                    {
+                        QuantidadeDisponivel = variacaoDto.QuantidadeEstoque,
+                        Data = DateTime.UtcNow,
+                        UltimaAtualizacao = DateTime.UtcNow
+                    };
+
+                    // opcional: apontar de volta (não estritamente necessário, mas evita ambiguidade)
+                    variacao.Estoque.ProdutoVariacao = variacao;
+
+                    produto.Variacoes.Add(variacao);
                 }
+
+                // 🔹 Salva o produto com as variações e estoques
+                _context.Produtos.Add(produto);
+                _context.SaveChanges();
+
+                transaction.Commit();
+                return produto;
             }
-
-            _context.Produtos.Add(produto);
-            _context.SaveChanges();
-
-            // Cria estoque
-            var estoque = new Estoque
+            catch (Exception ex)
             {
-                ProdutoId = produto.Id,
-                QuantidadeDisponivel = dto.QuantidadeInicial > 0 ? dto.QuantidadeInicial : 0
-            };
-
-            _context.Estoques.Add(estoque);
-            _context.SaveChanges();
-
-            produto.Estoque = estoque;
-            return produto;
+                transaction.Rollback();
+                throw new Exception("Erro ao criar produto com variações e estoque: {ex.Message}", ex);
+            }
         }
 
     }

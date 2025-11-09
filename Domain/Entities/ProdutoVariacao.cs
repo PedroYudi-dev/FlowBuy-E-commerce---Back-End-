@@ -20,12 +20,14 @@ namespace api_ecommerce.Domain.Entities
         [Required(ErrorMessage = "O nome da cor é obrigatório.")]
         public string CorNome { get; set; }
 
-        // Código hexadecimal da cor (ex: "#FF0000")
         public string? CorCodigo { get; set; }
+        public decimal Preco { get; set; }
 
-        // Imagem específica da variação (em base64)
         public string? ImagemBase64 { get; set; }
 
+
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+
+        public Estoque? Estoque { get; set; }
     }
 }

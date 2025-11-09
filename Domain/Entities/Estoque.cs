@@ -11,8 +11,9 @@ namespace api_ecommerce.Domain.Entities
         public int Id { get; set; }
 
         // ID do Produto:
-        [Required(ErrorMessage = "O ID do produto é obrigatório!")]
-        public int ProdutoId { get; set; }
+        public int? ProdutoId { get; set; }
+        public int? ProdutoVariacaoId { get; set; } 
+
 
         // Quantidade disponível:
         [Required(ErrorMessage = "A quantidade disponível é obrigatória!")]
@@ -27,5 +28,8 @@ namespace api_ecommerce.Domain.Entities
 
         [ForeignKey("ProdutoId")]
         public Produto Produto { get; set; }
+
+        [ForeignKey("ProdutoVariacaoId")]
+        public ProdutoVariacao? ProdutoVariacao { get; set; }
     }
 }

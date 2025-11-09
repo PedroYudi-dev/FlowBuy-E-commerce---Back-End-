@@ -907,12 +907,6 @@
             "type": "string",
             "nullable": true
           },
-          "quantidadeInicial": {
-            "maximum": 2147483647,
-            "minimum": 0,
-            "type": "integer",
-            "format": "int32"
-          },
           "imagemPrincipalBase64": {
             "type": "string",
             "nullable": true
@@ -1014,6 +1008,14 @@
           "imagemBase64": {
             "type": "string",
             "nullable": true
+          },
+          "quantidadeEstoque": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "preco": {
+            "type": "number",
+            "format": "double"
           }
         },
         "additionalProperties": false

@@ -74,10 +74,23 @@ namespace api_ecommerce.Infrastructure.Data.Context
                 .HasForeignKey(i => i.CarrinhoId);
 
             modelBuilder.Entity<Produto>()
+                .HasMany(p => p.Variacoes)
+                .WithOne(v => v.Produto)
+                .HasForeignKey(v => v.ProdutoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ProdutoVariacao>()
+                .HasOne(v => v.Estoque)
+                .WithOne(e => e.ProdutoVariacao)
+                .HasForeignKey<Estoque>(e => e.ProdutoVariacaoId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Produto>()
                 .HasOne(p => p.Estoque)
                 .WithOne(e => e.Produto)
                 .HasForeignKey<Estoque>(e => e.ProdutoId)
                 .OnDelete(DeleteBehavior.Cascade);
+
 
             // Valores padrão
             modelBuilder.Entity<Carrinho>()
