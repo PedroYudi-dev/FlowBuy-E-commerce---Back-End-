@@ -899,6 +899,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
           "marca": {
             "type": "string",
             "nullable": true

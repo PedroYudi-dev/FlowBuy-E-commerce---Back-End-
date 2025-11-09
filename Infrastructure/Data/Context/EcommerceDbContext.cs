@@ -48,13 +48,13 @@ namespace api_ecommerce.Infrastructure.Data.Context
             // Relacionamentos
             modelBuilder.Entity<Cliente>()
                 .HasOne(c => c.User)
-                .WithMany() 
+                .WithMany()
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Fornecedor>()
                .HasOne(f => f.User)
-               .WithMany() 
+               .WithMany()
                .HasForeignKey(f => f.UserId)
                .OnDelete(DeleteBehavior.Restrict);
 

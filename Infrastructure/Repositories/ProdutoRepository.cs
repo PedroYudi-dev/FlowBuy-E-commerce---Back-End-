@@ -35,7 +35,6 @@ namespace api_ecommerce.Infrastructure.Repositories
         public Produto Add(Produto produto)
         {
             _context.Produtos.Add(produto);
-            _context.SaveChanges();
             return produto;
         }
 

@@ -13,6 +13,7 @@ namespace api_ecommerce.Domain.DTOs
         [Required]
         public int FornecedorId { get; set; }
 
+        public string? Descricao { get; set; }
         public string? Marca { get; set; }
 
         [Range(0, int.MaxValue)]

@@ -107,32 +107,7 @@ namespace api_ecommerce.Controllers
 
             try
             {
-                var produto = new Produto
-                {
-                    Nome = dto.Nome,
-                    Preco = dto.Preco,
-                    Marca = dto.Marca,
-                    FornecedorId = dto.FornecedorId,
-                    Data = DateTime.UtcNow,
-                    ImagemPrincipalBase64 = dto.ImagemPrincipalBase64,
-                    CorNomePrincipal = dto.CorNomePrincipal,
-                    CorCodigoPrincipal = dto.CorCodigoPrincipal,
-                };
-
-                // 🔹 Adiciona as variações ao produto
-                foreach (var variacaoDto in dto.Variacoes)
-                {
-                    var variacao = new ProdutoVariacao
-                    {
-                        CorNome = variacaoDto.CorNome,
-                        CorCodigo = variacaoDto.CorCodigo,
-                        ImagemBase64 = variacaoDto.ImagemBase64
-                    };
-                    produto.Variacoes.Add(variacao);
-                }
-
-                // Usa o mesmo método que já cria produto + estoque
-                var criado = _produtoService.CriarProdutoComEstoque(produto, dto.QuantidadeInicial);
+                var criado = _produtoService.CriarProdutoComVariacoesEEstoque(dto);
 
                 var resposta = new
                 {
@@ -154,7 +129,6 @@ namespace api_ecommerce.Controllers
                 };
 
                 return CreatedAtAction(nameof(GetById), new { id = criado.Id }, resposta);
-            
             }
             catch (Exception ex)
             {

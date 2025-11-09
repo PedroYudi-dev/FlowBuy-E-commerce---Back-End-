@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Remove="Domain\DTOs\Class.cs" />
+    <Compile Remove="Domain\DTOs\ProdutoUpdateDTO.cs" />
     <Compile Remove="Migrations\20251103001133_UpdateVariationProduct.cs" />
     <Compile Remove="Migrations\20251103001133_UpdateVariationProduct.Designer.cs" />
     <Compile Remove="Migrations\20251103020041_UpdateVariationProductPart4.cs" />
@@ -16,6 +17,20 @@
     <Compile Remove="Migrations\20251103184021_UpdateStockInProductToVariation.Designer.cs" />
     <Compile Remove="Migrations\20251105202322_UpdateImageMainPart2.cs" />
     <Compile Remove="Migrations\20251105202322_UpdateImageMainPart2.Designer.cs" />
+    <Compile Remove="Migrations\20251106171803_CreateGetProductToforncedor.cs" />
+    <Compile Remove="Migrations\20251106171803_CreateGetProductToforncedor.Designer.cs" />
+    <Compile Remove="Migrations\20251106172055_CreateGetProductToforncedor1.cs" />
+    <Compile Remove="Migrations\20251106172055_CreateGetProductToforncedor1.Designer.cs" />
+    <Compile Remove="Migrations\20251106194446_UpdateInPutAndDelete.cs" />
+    <Compile Remove="Migrations\20251106194446_UpdateInPutAndDelete.Designer.cs" />
+    <Compile Remove="Migrations\20251107153002_UpdateInPutparte1.cs" />
+    <Compile Remove="Migrations\20251107153002_UpdateInPutparte1.Designer.cs" />
+    <Compile Remove="Migrations\20251109032131_Test1.cs" />
+    <Compile Remove="Migrations\20251109032131_Test1.Designer.cs" />
+    <Compile Remove="Migrations\20251109034122_CorrigindoOEstoque.cs" />
+    <Compile Remove="Migrations\20251109034122_CorrigindoOEstoque.Designer.cs" />
+    <Compile Remove="Migrations\20251109035613_Corrigindo1.cs" />
+    <Compile Remove="Migrations\20251109035613_Corrigindo1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

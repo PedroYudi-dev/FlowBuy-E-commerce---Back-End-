@@ -20,6 +20,8 @@ namespace api_ecommerce.Domain.Entities
         [Range(0.01, double.MaxValue, ErrorMessage = "O preço deve ser maior que zero!")]
         public decimal Preco { get; set; }
 
+        public string? Descricao { get; set; }
+
         // ID do fornecedor:
         [Required(ErrorMessage = "O ID do fornecedor é obrigatório!")]
         public int FornecedorId { get; set; }

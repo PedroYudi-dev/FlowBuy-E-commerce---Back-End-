@@ -1,4 +1,5 @@
-﻿using api_ecommerce.Domain.Entities;
+﻿using api_ecommerce.Domain.DTOs;
+using api_ecommerce.Domain.Entities;
 using api_ecommerce.Domain.Interfaces.Repositories;
 using api_ecommerce.Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,52 @@ namespace api_ecommerce.Domain.Services
                 transaction.Rollback();
                 throw new Exception($"Erro ao criar produto com estoque");
             }
+        }
+
+        public Produto CriarProdutoComVariacoesEEstoque(ProdutoComVariacoesDTO dto)
+        {
+            var produto = new Produto
+            {
+                Nome = dto.Nome,
+                Preco = dto.Preco,
+                Marca = dto.Marca,
+                Descricao = dto.Descricao,
+                FornecedorId = dto.FornecedorId,
+                Data = DateTime.UtcNow,
+                ImagemPrincipalBase64 = dto.ImagemPrincipalBase64,
+                CorNomePrincipal = dto.CorNomePrincipal,
+                CorCodigoPrincipal = dto.CorCodigoPrincipal
+            };
+
+            // Adiciona variações
+            if (dto.Variacoes != null && dto.Variacoes.Any())
+            {
+                foreach (var variacaoDto in dto.Variacoes)
+                {
+                    produto.Variacoes.Add(new ProdutoVariacao
+                    {
+                        CorNome = variacaoDto.CorNome,
+                        CorCodigo = variacaoDto.CorCodigo,
+                        ImagemBase64 = variacaoDto.ImagemBase64
+                    });
+                }
+            }
+
+            _context.Produtos.Add(produto);
+            _context.SaveChanges();
+
+            // Cria estoque
+            var estoque = new Estoque
+            {
+                ProdutoId = produto.Id,
+                QuantidadeDisponivel = dto.QuantidadeInicial > 0 ? dto.QuantidadeInicial : 0
+            };
+
+            _context.Estoques.Add(estoque);
+            _context.SaveChanges();
+
+            produto.Estoque = estoque;
+            return produto;
         }
 
     }
