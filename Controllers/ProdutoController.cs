@@ -177,8 +177,9 @@ namespace api_ecommerce.Controllers
                 if (!_produtoRepository.ExisteProduto(id))
                     return NotFound($"Produto com id {id} não encontrado.");
 
-                _produtoRepository.Delete(id);
-                return NoContent();
+                _produtoService.ExcluirProdutoCompleto(id);
+
+                return Ok(new { message = $"Produto {id} e suas variações foram removidos com sucesso." });
             }
             catch (Exception ex)
             {

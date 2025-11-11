@@ -10,7 +10,7 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         Produto? GetById(int id);
         Produto Add(Produto produto);
         void Update(Produto produto);
-        void Delete(int id);
+        void DeleteProdutoCompleto(int id);
         bool ExisteProduto(int id);
         IEnumerable<Produto> GetByFornecedorId(int fornecedorId);
 

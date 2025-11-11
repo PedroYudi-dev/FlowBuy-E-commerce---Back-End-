@@ -44,14 +44,38 @@ namespace api_ecommerce.Infrastructure.Repositories
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void DeleteProdutoCompleto(int id)
         {
-            var produto = _context.Produtos.Find(id);
-            if (produto != null)
-            {
-                _context.Produtos.Remove(produto);
-                _context.SaveChanges();
-            }
+            var produto = _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .Include(p => p.Estoque)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (produto == null)
+                throw new Exception($"Produto com id {id} não encontrado.");
+
+            // Remove estoques das variações
+            var estoquesVariacoes = produto.Variacoes
+                .Where(v => v.Estoque != null)
+                .Select(v => v.Estoque)
+                .ToList();
+
+            if (estoquesVariacoes.Any())
+                _context.Estoques.RemoveRange(estoquesVariacoes);
+
+            // Remove estoques do produto principal (se houver)
+            if (produto.Estoque != null)
+                _context.Estoques.Remove(produto.Estoque);
+
+            // Remove as variações
+            if (produto.Variacoes.Any())
+                _context.ProdutoVariacoes.RemoveRange(produto.Variacoes);
+
+            // Por fim, remove o produto
+            _context.Produtos.Remove(produto);
+
+            _context.SaveChanges();
         }
 
         public bool ExisteProduto(int id)

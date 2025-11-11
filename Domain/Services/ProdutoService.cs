@@ -115,5 +115,21 @@ namespace api_ecommerce.Domain.Services
             }
         }
 
+        public void ExcluirProdutoCompleto(int produtoId)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+
+            try
+            {
+                _produtoRepository.DeleteProdutoCompleto(produtoId);
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw new Exception($"Erro ao excluir produto completo (ID: {produtoId}).");
+            }
+        }
+
     }
 }
