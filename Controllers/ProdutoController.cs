@@ -56,48 +56,44 @@ namespace api_ecommerce.Controllers
             }
         }
 
-        // POST:
-        //[HttpPost]
-        //public IActionResult Create([FromBody] ProdutoDTO produtoDto)
-        //{
-        //    if (produtoDto == null)
-        //        return BadRequest("Produto não pode ser nulo.");
+        [HttpGet("fornecedor/{fornecedorId}")]
+        public IActionResult GetByFornecedorId(int fornecedorId)
+        {
+            try
+            {
+                var produtos = _produtoRepository.GetByFornecedorId(fornecedorId);
 
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+                if (produtos == null || !produtos.Any())
+                    return NotFound($"Nenhum produto encontrado para o fornecedor {fornecedorId}.");
 
-        //    try
-        //    {
-        //        var produto = new Produto
-        //        {
-        //            Nome = produtoDto.Nome,
-        //            Preco = produtoDto.Preco,
-        //            FornecedorId = produtoDto.FornecedorId,
-        //            Marca = produtoDto.Marca,
-        //            Data = DateTime.UtcNow, // Timestamp no momento da criação
+                // opcional: mapear para DTO simples se quiser evitar retornar tudo
+                var result = produtos.Select(p => new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.Marca,
+                    p.Preco,
+                    p.FornecedorId,
+                    p.Data,
+                    p.ImagemPrincipalBase64,
+                    Variacoes = p.Variacoes.Select(v => new
+                    {
+                        v.Id,
+                        v.CorNome,
+                        v.CorCodigo,
+                        v.Preco,
+                        Estoque = v.Estoque != null ? v.Estoque.QuantidadeDisponivel : 0
+                    }),
+                    EstoqueTotal = p.Variacoes.Sum(v => v.Estoque != null ? v.Estoque.QuantidadeDisponivel : 0)
+                });
 
-        //            // Imagens:
-        //            Imagem1_base64 = produtoDto?.Imagem1_base64,
-        //            Imagem1_cor_nome = produtoDto?.Imagem1_cor_nome,
-        //            Imagem1_cor_codigo = produtoDto?.Imagem1_cor_codigo,
-
-        //            Imagem2_base64 = produtoDto?.Imagem2_base64,
-        //            Imagem2_cor_nome = produtoDto?.Imagem2_cor_nome,
-        //            Imagem2_cor_codigo = produtoDto?.Imagem2_cor_codigo,
-
-        //            Imagem3_base64 = produtoDto?.Imagem3_base64,
-        //            Imagem3_cor_nome = produtoDto?.Imagem3_cor_nome,
-        //            Imagem3_cor_codigo = produtoDto?.Imagem3_cor_codigo,
-        //        };
-
-        //        _produtoRepository.Add(produto);
-        //        return CreatedAtAction(nameof(GetById), new { id = produto.Id }, produto);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Erro ao criar produto: {ex.Message}");
-        //    }
-        //}
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar produtos do fornecedor: {ex.Message}");
+            }
+        }
 
         [HttpPost("Create-Product")]
         public IActionResult CreateComVariacoes([FromBody] ProdutoComVariacoesDTO dto)

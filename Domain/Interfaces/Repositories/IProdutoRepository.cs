@@ -12,5 +12,7 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         void Update(Produto produto);
         void Delete(int id);
         bool ExisteProduto(int id);
+        IEnumerable<Produto> GetByFornecedorId(int fornecedorId);
+
     }
 }

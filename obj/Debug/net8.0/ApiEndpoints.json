@@ -385,6 +385,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "api_ecommerce.Controllers.ProdutoController",
+    "Method": "GetByFornecedorId",
+    "RelativePath": "api/Produto/fornecedor/{fornecedorId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fornecedorId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "api_ecommerce.Controllers.VendaController",
     "Method": "CriarVenda",
     "RelativePath": "api/Venda",

@@ -58,5 +58,16 @@ namespace api_ecommerce.Infrastructure.Repositories
         {
             return _context.Produtos.Any(p => p.Id == id);
         }
+
+        public IEnumerable<Produto> GetByFornecedorId(int fornecedorId)
+        {
+            return _context.Produtos
+                .Where(p => p.FornecedorId == fornecedorId)
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .Include(p => p.Estoque)
+                .AsNoTracking()
+                .ToList();
+        }
     }
 }

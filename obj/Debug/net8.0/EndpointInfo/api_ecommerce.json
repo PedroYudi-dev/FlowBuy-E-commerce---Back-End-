@@ -595,6 +595,29 @@
         }
       }
     },
+    "/api/Produto/fornecedor/{fornecedorId}": {
+      "get": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "fornecedorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Produto/Create-Product": {
       "post": {
         "tags": [
