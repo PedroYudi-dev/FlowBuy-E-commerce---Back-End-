@@ -117,5 +117,22 @@ namespace api_ecommerce.Infrastructure.Repositories
                 .Where(p => p.Marca.ToLower() == marca.ToLower())
                 .ToList();
         }
+
+        public IEnumerable<Produto> SearchByNome(string nome)
+        {
+            if (string.IsNullOrWhiteSpace(nome))
+                return new List<Produto>();
+
+            return _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .Include(p => p.Estoque)
+                .Where(p =>
+                    EF.Functions.Like(p.Nome.ToLower(), $"%{nome.ToLower()}%") ||
+                    EF.Functions.Like(p.Marca.ToLower(), $"%{nome.ToLower()}%")
+                )
+                .AsNoTracking()
+                .ToList();
+        }
     }
 }

@@ -113,6 +113,28 @@ namespace api_ecommerce.Controllers
             }
         }
 
+        [HttpGet("search")]
+        public IActionResult Search([FromQuery] string nome)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nome))
+                    return BadRequest("O nome não pode ser vazio.");
+
+                var produtos = _produtoService.SearchProducts(nome);
+
+                if (produtos == null || !produtos.Any())
+                    return NotFound($"Nenhum produto encontrado com o nome: {nome}");
+
+                return Ok(produtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar produtos: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("Create-Product")]
         public IActionResult CreateComVariacoes([FromBody] ProdutoComVariacoesDTO dto)
         {

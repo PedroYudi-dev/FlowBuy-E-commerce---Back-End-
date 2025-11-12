@@ -253,5 +253,10 @@ namespace api_ecommerce.Domain.Services
         {
             return _produtoRepository.GetByMarca(marca);
         }
+
+        public IEnumerable<Produto> SearchProducts(string nome)
+        {
+            return _produtoRepository.SearchByNome(nome);
+        }
     }
 }

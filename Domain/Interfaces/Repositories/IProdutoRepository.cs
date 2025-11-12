@@ -15,8 +15,9 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         IEnumerable<Produto> GetByFornecedorId(int fornecedorId);
         Task<Produto?> GetProdutoComVariacoesAsync(int produtoId);
         Task UpdateAsync(Produto produto); // 🔹 novo método assíncrono
-
         IEnumerable<Produto> GetByMarca(string marca);
+        IEnumerable<Produto> SearchByNome(string nome);
+
 
     }
 }

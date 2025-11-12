@@ -438,6 +438,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "api_ecommerce.Controllers.ProdutoController",
+    "Method": "Search",
+    "RelativePath": "api/Produto/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nome",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "api_ecommerce.Controllers.VendaController",
     "Method": "CriarVenda",
     "RelativePath": "api/Venda",
