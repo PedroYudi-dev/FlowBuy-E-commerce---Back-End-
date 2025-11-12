@@ -93,5 +93,29 @@ namespace api_ecommerce.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToList();
         }
+
+        public async Task<Produto?> GetProdutoComVariacoesAsync(int produtoId)
+        {
+            return await _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(p => p.Id == produtoId);
+        }
+
+        public async Task UpdateAsync(Produto produto)
+        {
+            _context.Produtos.Update(produto);
+            await _context.SaveChangesAsync();
+        }
+
+        public IEnumerable<Produto> GetByMarca(string marca)
+        {
+            return _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .Include(p => p.Estoque)
+                .Where(p => p.Marca.ToLower() == marca.ToLower())
+                .ToList();
+        }
     }
 }

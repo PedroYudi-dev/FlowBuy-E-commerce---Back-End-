@@ -13,6 +13,10 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         void DeleteProdutoCompleto(int id);
         bool ExisteProduto(int id);
         IEnumerable<Produto> GetByFornecedorId(int fornecedorId);
+        Task<Produto?> GetProdutoComVariacoesAsync(int produtoId);
+        Task UpdateAsync(Produto produto); // 🔹 novo método assíncrono
+
+        IEnumerable<Produto> GetByMarca(string marca);
 
     }
 }

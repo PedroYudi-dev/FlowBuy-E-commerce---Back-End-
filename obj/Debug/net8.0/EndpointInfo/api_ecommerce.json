@@ -573,6 +573,46 @@
           }
         }
       },
+      "patch": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProdutoComVariacoesUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "delete": {
         "tags": [
           "Produto"
@@ -608,6 +648,28 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Produto/marca/{marca}": {
+      "get": {
+        "tags": [
+          "Produto"
+        ],
+        "parameters": [
+          {
+            "name": "marca",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -952,6 +1014,57 @@
         },
         "additionalProperties": false
       },
+      "ProdutoComVariacoesUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "preco": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fornecedorId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "marca": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagemPrincipalBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "corNomePrincipal": {
+            "type": "string",
+            "nullable": true
+          },
+          "corCodigoPrincipal": {
+            "type": "string",
+            "nullable": true
+          },
+          "variacoes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProdutoVariacaoUpdateDTO"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ProdutoDTO": {
         "required": [
           "fornecedorId",
@@ -1039,6 +1152,38 @@
           "preco": {
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProdutoVariacaoUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "corNome": {
+            "type": "string",
+            "nullable": true
+          },
+          "corCodigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagemBase64": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantidadeEstoque": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "preco": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false

@@ -95,6 +95,24 @@ namespace api_ecommerce.Controllers
             }
         }
 
+        [HttpGet("marca/{marca}")]
+        public IActionResult GetByMarca(string marca)
+        {
+            try
+            {
+                var produtos = _produtoService.GetByMarca(marca);
+
+                if (produtos == null || !produtos.Any())
+                    return NotFound($"Nenhum produto encontrado para a marca: {marca}");
+
+                return Ok(produtos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar produtos da marca {marca}: {ex.Message}");
+            }
+        }
+
         [HttpPost("Create-Product")]
         public IActionResult CreateComVariacoes([FromBody] ProdutoComVariacoesDTO dto)
         {
@@ -165,6 +183,67 @@ namespace api_ecommerce.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro ao atualizar produto: {ex.Message}");
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> AtualizarProduto(int id, [FromBody] ProdutoComVariacoesUpdateDTO dto)
+        {
+            try
+            {
+                if (dto == null)
+                    return BadRequest("Dados do produto são obrigatórios.");
+
+                var produtoAtualizado = await _produtoService.UpdateAsync(id, dto);
+
+                if (produtoAtualizado == null)
+                    return NotFound($"Produto com ID {id} não encontrado.");
+
+                var estoqueTotal = produtoAtualizado.Variacoes
+                    .Sum(v => v.Estoque?.QuantidadeDisponivel ?? 0);
+
+                var primeiraVariacao = produtoAtualizado.Variacoes.FirstOrDefault();
+                var precoPrincipal = primeiraVariacao?.Preco ?? produtoAtualizado.Preco;
+                var corPrincipal = primeiraVariacao?.CorNome ?? produtoAtualizado.CorNomePrincipal;
+                var corCodigoPrincipal = primeiraVariacao?.CorCodigo ?? produtoAtualizado.CorCodigoPrincipal;
+                var imagemPrincipal = primeiraVariacao?.ImagemBase64 ?? produtoAtualizado.ImagemPrincipalBase64;
+
+                var produtoResponse = new
+                {
+                    id = produtoAtualizado.Id,
+                    nome = produtoAtualizado.Nome,
+                    descricao = produtoAtualizado.Descricao,
+                    marca = produtoAtualizado.Marca,
+                    data = produtoAtualizado.Data,
+                    precoPrincipal = precoPrincipal,
+                    imagemPrincipalBase64 = imagemPrincipal,
+                    corNomePrincipal = corPrincipal,
+                    corCodigoPrincipal = corCodigoPrincipal,
+                    estoqueTotal = estoqueTotal,
+                    variacoes = produtoAtualizado.Variacoes.Select(v => new
+                    {
+                        id = v.Id,
+                        corNome = v.CorNome,
+                        corCodigo = v.CorCodigo,
+                        preco = v.Preco,
+                        imagemBase64 = v.ImagemBase64,
+                        quantidadeDisponivel = v.Estoque?.QuantidadeDisponivel ?? 0
+                    })
+                };
+
+                return Ok(new
+                {
+                    message = "Produto atualizado com sucesso!",
+                    produto = produtoResponse
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Ocorreu um erro ao atualizar o produto.",
+                    error = ex.Message
+                });
             }
         }
 

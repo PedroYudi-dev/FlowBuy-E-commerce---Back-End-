@@ -131,5 +131,127 @@ namespace api_ecommerce.Domain.Services
             }
         }
 
+        public async Task<Produto?> UpdateAsync(int id, ProdutoComVariacoesUpdateDTO dto)
+        {
+            var produto = await _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (produto == null)
+                return null;
+
+            // 🔹 Atualiza campos principais
+            if (!string.IsNullOrEmpty(dto.Nome))
+                produto.Nome = dto.Nome;
+
+            if (!string.IsNullOrEmpty(dto.Descricao))
+                produto.Descricao = dto.Descricao;
+
+            if (dto.Preco.HasValue)
+                produto.Preco = dto.Preco.Value;
+
+            if (dto.FornecedorId.HasValue)
+                produto.FornecedorId = dto.FornecedorId.Value;
+
+            if (!string.IsNullOrEmpty(dto.Marca))
+                produto.Marca = dto.Marca;
+
+            if (!string.IsNullOrEmpty(dto.ImagemPrincipalBase64))
+                produto.ImagemPrincipalBase64 = dto.ImagemPrincipalBase64;
+
+            if (!string.IsNullOrEmpty(dto.CorNomePrincipal))
+                produto.CorNomePrincipal = dto.CorNomePrincipal;
+
+            if (!string.IsNullOrEmpty(dto.CorCodigoPrincipal))
+                produto.CorCodigoPrincipal = dto.CorCodigoPrincipal;
+
+            // 🔹 Atualiza variações
+            if (dto.Variacoes != null && dto.Variacoes.Any())
+            {
+                foreach (var variacaoDto in dto.Variacoes)
+                {
+                    var variacaoExistente = produto.Variacoes
+                        .FirstOrDefault(v => v.Id == variacaoDto.Id);
+
+                    if (variacaoExistente != null)
+                    {
+                        // 🔸 Atualiza somente os campos enviados
+                        if (!string.IsNullOrEmpty(variacaoDto.CorNome))
+                            variacaoExistente.CorNome = variacaoDto.CorNome;
+
+                        if (!string.IsNullOrEmpty(variacaoDto.CorCodigo))
+                            variacaoExistente.CorCodigo = variacaoDto.CorCodigo;
+
+                        if (!string.IsNullOrEmpty(variacaoDto.ImagemBase64))
+                            variacaoExistente.ImagemBase64 = variacaoDto.ImagemBase64;
+
+                        if (variacaoDto.Preco.HasValue)
+                            variacaoExistente.Preco = variacaoDto.Preco.Value;
+
+                        // 🔸 Atualiza o estoque da variação
+                        if (variacaoDto.QuantidadeEstoque.HasValue)
+                        {
+                            if (variacaoExistente.Estoque == null)
+                                variacaoExistente.Estoque = new Estoque
+                                {
+                                    QuantidadeDisponivel = variacaoDto.QuantidadeEstoque.Value,
+                                    UltimaAtualizacao = DateTime.UtcNow
+                                };
+                            else
+                            {
+                                variacaoExistente.Estoque.QuantidadeDisponivel = variacaoDto.QuantidadeEstoque.Value;
+                                variacaoExistente.Estoque.UltimaAtualizacao = DateTime.UtcNow;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var novaVariacao = new ProdutoVariacao
+                        {
+                            CorNome = variacaoDto.CorNome,
+                            CorCodigo = variacaoDto.CorCodigo,
+                            ImagemBase64 = variacaoDto.ImagemBase64,
+                            Preco = variacaoDto.Preco ?? produto.Preco,
+                            ProdutoId = produto.Id, // 🔹 garante vínculo correto
+                            Estoque = new Estoque
+                            {
+                                QuantidadeDisponivel = variacaoDto.QuantidadeEstoque ?? 0,
+                                Data = DateTime.UtcNow,
+                                UltimaAtualizacao = DateTime.UtcNow
+                            }
+                        };
+                        produto.Variacoes.Add(novaVariacao);
+                    }
+                }
+            }
+
+            // 🔹 Calcula estoque total e preço principal
+            var estoqueTotal = produto.Variacoes.Sum(v => v.Estoque?.QuantidadeDisponivel ?? 0);
+            var precoPrincipal = produto.Variacoes.FirstOrDefault()?.Preco ?? produto.Preco;
+
+            // 🔹 Atualiza estoque principal
+            if (produto.Estoque != null)
+                produto.Estoque.QuantidadeDisponivel = estoqueTotal;
+            else
+                produto.Estoque = new Estoque
+                {
+                    QuantidadeDisponivel = estoqueTotal,
+                    UltimaAtualizacao = DateTime.UtcNow
+                };
+
+            // 🔹 Atualiza preço e data
+            produto.Preco = precoPrincipal;
+            produto.Data = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return produto;
+        }
+
+        public IEnumerable<Produto> GetByMarca(string marca)
+        {
+            return _produtoRepository.GetByMarca(marca);
+        }
     }
 }
