@@ -92,7 +92,8 @@ namespace api_ecommerce.Domain.Services
                     {
                         QuantidadeDisponivel = variacaoDto.QuantidadeEstoque,
                         Data = DateTime.UtcNow,
-                        UltimaAtualizacao = DateTime.UtcNow
+                        UltimaAtualizacao = DateTime.UtcNow,
+                        ProdutoVariacao = variacao
                     };
 
                     // opcional: apontar de volta (não estritamente necessário, mas evita ambiguidade)
@@ -258,5 +259,30 @@ namespace api_ecommerce.Domain.Services
         {
             return _produtoRepository.SearchByNome(nome);
         }
+
+        public object MapProdutoToDto(Produto produto)
+        {
+            return new
+            {
+                produto.Id,
+                produto.Nome,
+                produto.Marca,
+                produto.Preco,
+                produto.FornecedorId,
+                produto.Data,
+                produto.ImagemPrincipalBase64,
+                Variacoes = produto.Variacoes.Select(v => new
+                {
+                    v.Id,
+                    v.CorNome,
+                    v.CorCodigo,
+                    v.Preco,
+                    Estoque = v.Estoque?.QuantidadeDisponivel ?? 0
+                }),
+                EstoqueTotal = produto.Variacoes.Sum(v => v.Estoque?.QuantidadeDisponivel ?? 0)
+            };
+        }
+
+
     }
 }

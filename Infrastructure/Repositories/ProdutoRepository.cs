@@ -28,6 +28,7 @@ namespace api_ecommerce.Infrastructure.Repositories
         {
             return _context.Produtos
                         .Include(p => p.Variacoes)
+                        .ThenInclude(v => v.Estoque)
                         .Include(p => p.Estoque)
                         .FirstOrDefault(p => p.Id == id);
         }
@@ -132,6 +133,15 @@ namespace api_ecommerce.Infrastructure.Repositories
                     EF.Functions.Like(p.Marca.ToLower(), $"%{nome.ToLower()}%")
                 )
                 .AsNoTracking()
+                .ToList();
+        }
+
+        public IEnumerable<Produto> GetAllWithVariacoesAndEstoque()
+        {
+            return _context.Produtos
+                .Include(p => p.Variacoes)
+                    .ThenInclude(v => v.Estoque)
+                .AsNoTracking() // mais rápido para leitura
                 .ToList();
         }
     }

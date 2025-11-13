@@ -17,6 +17,8 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         Task UpdateAsync(Produto produto); // 🔹 novo método assíncrono
         IEnumerable<Produto> GetByMarca(string marca);
         IEnumerable<Produto> SearchByNome(string nome);
+        IEnumerable<Produto> GetAllWithVariacoesAndEstoque();
+
 
 
     }

@@ -53,7 +53,8 @@ builder.Services.AddDbContext<EcommerceDbContext>(options =>
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
+        )
+    );
 
 var app = builder.Build();
 

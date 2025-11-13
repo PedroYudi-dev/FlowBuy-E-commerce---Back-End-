@@ -28,7 +28,33 @@ namespace api_ecommerce.Controllers
         {
             try
             {
-                var produtos = _produtoRepository.GetAll().ToList();
+                // Busca todos os produtos com suas variações e estoques
+                var produtos = _produtoRepository.GetAllWithVariacoesAndEstoque()
+                    .Select(p => new
+                    {
+                        p.Id,
+                        p.Nome,
+                        p.Marca,
+                        p.Preco,
+                        p.FornecedorId,
+                        p.Data,
+                        p.ImagemPrincipalBase64,
+
+                        // Variações do produto
+                        Variacoes = p.Variacoes.Select(v => new
+                        {
+                            v.Id,
+                            v.CorNome,
+                            v.CorCodigo,
+                            v.Preco,
+                            QuantidadeDisponivel = v.Estoque != null ? v.Estoque.QuantidadeDisponivel : 0
+                        }),
+
+                        // Soma de todos os estoques das variações
+                        EstoqueTotal = p.Variacoes.Sum(v => v.Estoque != null ? v.Estoque.QuantidadeDisponivel : 0)
+                    })
+                    .ToList();
+
                 return Ok(produtos);
             }
             catch (Exception ex)
@@ -36,6 +62,7 @@ namespace api_ecommerce.Controllers
                 return StatusCode(500, $"Erro ao buscar produtos: {ex.Message}");
             }
         }
+
 
         // GET (Por Id):
         [HttpGet("{id}")]
@@ -48,7 +75,8 @@ namespace api_ecommerce.Controllers
                 if (produto == null)
                     return NotFound($"Produto com id {id} não encontrado.");
 
-                return Ok(produto);
+                var result = _produtoService.MapProdutoToDto(produto);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -150,6 +178,7 @@ namespace api_ecommerce.Controllers
                     criado.Id,
                     criado.Nome,
                     PrecoPrincipal = criado.Preco,
+                    criado.FornecedorId,
                     criado.Marca,
                     criado.Data,
                     criado.ImagemPrincipalBase64,
