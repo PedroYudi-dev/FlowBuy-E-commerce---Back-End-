@@ -51,6 +51,23 @@ namespace api_ecommerce.Controllers
             }
         }
 
+        [HttpGet("variacao/{variacaoId}")]
+        public IActionResult GetByVariacaoId(int variacaoId)
+        {
+            try
+            {
+                var estoque = _estoqueRepository.GetByVariacaoId(variacaoId);
+                if (estoque == null)
+                    return NotFound($"Estoque da variação {variacaoId} não encontrado.");
+
+                return Ok(estoque);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao buscar estoque: {ex.Message}");
+            }
+        }
+
         // POST:
         [HttpPost]
         public IActionResult Create([FromBody] EstoqueDTO estoqueDto)

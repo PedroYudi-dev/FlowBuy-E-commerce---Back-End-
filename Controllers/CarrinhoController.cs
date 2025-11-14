@@ -3,6 +3,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using api_ecommerce.Domain.DTOs;
 using api_ecommerce.Domain.Interfaces.Services;
+using api_ecommerce.Domain.Services;
 
 namespace api_ecommerce.Controllers
 {
@@ -28,6 +29,20 @@ namespace api_ecommerce.Controllers
             catch (ArgumentException ex)
             {
                 return NotFound(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet("{clienteId:int}/historico")]
+        public IActionResult GetHistorico(int clienteId)
+        {
+            try
+            {
+                var carrinhos = _carrinhoService.ListarCarrinhos(clienteId, "NAO");
+                return Ok(carrinhos);
             }
             catch (Exception ex)
             {
@@ -65,6 +80,39 @@ namespace api_ecommerce.Controllers
             {
                 var resumo = _carrinhoService.FinalizarCompra(clienteId);
                 return Ok(resumo);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+
+        [HttpPut("{clienteId:int}/itens/{itemId:int}")]
+        public IActionResult UpdateItem(int clienteId, int itemId, [FromBody] int novaQuantidade)
+        {
+            try
+            {
+                var carrinho = _carrinhoService.AtualizarQuantidade(clienteId, itemId, novaQuantidade);
+                return Ok(carrinho);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpDelete("{clienteId:int}/itens/{itemId:int}")]
+        public IActionResult RemoveItem(int clienteId, int itemId)
+        {
+            try
+            {
+                _carrinhoService.RemoverItem(clienteId, itemId);
+                return Ok(new { message = "Item removido com sucesso" });
             }
             catch (ArgumentException ex)
             {

@@ -122,5 +122,43 @@ namespace api_ecommerce.Domain.Services
                 Total = total
             };
         }
+
+        public void RemoverItem(int clienteId, int itemId)
+        {
+            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+
+            if (item == null)
+                throw new ArgumentException("Item não encontrado no carrinho.");
+
+            carrinho.Itens.Remove(item);
+            _carrinhoRepository.RemoveItem(item);
+        }
+
+        public Carrinho AtualizarQuantidade(int clienteId, int itemId, int novaQuantidade)
+        {
+            if (novaQuantidade <= 0) throw new ArgumentException("Quantidade inválida.");
+
+            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+
+            if (item == null)
+                throw new ArgumentException("Item não encontrado.");
+
+            item.Quantidade = novaQuantidade;
+            item.Subtotal = item.PrecoUnitario * novaQuantidade;
+            _carrinhoRepository.SaveChanges();
+
+            return carrinho;
+        }
+
+        public IEnumerable<Carrinho> ListarCarrinhos(int clienteId, string? exibir = null)
+        {
+            if (!_clienteRepository.ExisteCliente(clienteId))
+                throw new ArgumentException("Cliente não encontrado");
+
+            // reuso do repositório que já possui ListarPorCliente
+            return _carrinhoRepository.ListarPorCliente(clienteId, exibir);
+        }
     }
 }

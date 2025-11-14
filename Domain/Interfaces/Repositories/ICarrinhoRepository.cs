@@ -12,5 +12,7 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
         void AddItem(CarrinhoItem item);
         void Update(Carrinho carrinho);
         void SaveChanges();
+        void RemoveItem(CarrinhoItem item);
+
     }
 }

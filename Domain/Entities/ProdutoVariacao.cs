@@ -27,7 +27,6 @@ namespace api_ecommerce.Domain.Entities
 
 
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-
         public Estoque? Estoque { get; set; }
     }
 }

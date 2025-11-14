@@ -14,5 +14,7 @@ namespace api_ecommerce.Domain.Interfaces.Repositories
 
         bool SuficienteEstoque(int produtoId, int quantidade);
         void ReduzirEstoque(int produtoId, int quantidade);
+        Estoque? GetByVariacaoId(int variacaoId);
+
     }
 }

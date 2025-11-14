@@ -73,5 +73,10 @@ namespace api_ecommerce.Infrastructure.Repositories
                 _context.SaveChanges();
             }
         }
+
+        public Estoque? GetByVariacaoId(int variacaoId)
+        {
+            return _context.Estoques.FirstOrDefault(e => e.ProdutoVariacaoId == variacaoId);
+        }
     }
 }

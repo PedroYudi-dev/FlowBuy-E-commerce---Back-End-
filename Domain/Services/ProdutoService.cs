@@ -76,36 +76,39 @@ namespace api_ecommerce.Domain.Services
                     CorCodigoPrincipal = dto.CorCodigoPrincipal,
                 };
 
+                _context.Produtos.Add(produto);
+                _context.SaveChanges();
+
                 // 🔹 Adiciona variações com estoque próprio
                 foreach (var variacaoDto in dto.Variacoes)
                 {
                     var variacao = new ProdutoVariacao
                     {
+                        ProdutoId = produto.Id,
                         CorNome = variacaoDto.CorNome,
                         CorCodigo = variacaoDto.CorCodigo,
                         ImagemBase64 = variacaoDto.ImagemBase64,
                         Preco = variacaoDto.Preco,
                     };
 
+                    _context.ProdutoVariacoes.Add(variacao);
+                    _context.SaveChanges();
+
                     // cria o estoque e atribui a variacao
                     variacao.Estoque = new Estoque
                     {
+                        ProdutoId = produto.Id,
                         QuantidadeDisponivel = variacaoDto.QuantidadeEstoque,
                         Data = DateTime.UtcNow,
                         UltimaAtualizacao = DateTime.UtcNow,
-                        ProdutoVariacao = variacao
+                        ProdutoVariacaoId = variacao.Id
                     };
 
-                    // opcional: apontar de volta (não estritamente necessário, mas evita ambiguidade)
-                    variacao.Estoque.ProdutoVariacao = variacao;
-
-                    produto.Variacoes.Add(variacao);
+                    _context.Estoques.Add(variacao.Estoque);
                 }
 
                 // 🔹 Salva o produto com as variações e estoques
-                _context.Produtos.Add(produto);
-                _context.SaveChanges();
-
+                _context.SaveChanges(); // salva tudo
                 transaction.Commit();
                 return produto;
             }
@@ -277,6 +280,7 @@ namespace api_ecommerce.Domain.Services
                     v.CorNome,
                     v.CorCodigo,
                     v.Preco,
+                    v.ImagemBase64,
                     Estoque = v.Estoque?.QuantidadeDisponivel ?? 0
                 }),
                 EstoqueTotal = produto.Variacoes.Sum(v => v.Estoque?.QuantidadeDisponivel ?? 0)

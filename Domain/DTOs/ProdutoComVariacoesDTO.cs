@@ -25,6 +25,7 @@ namespace api_ecommerce.Domain.DTOs
 
     public class ProdutoVariacaoDTO
     {
+        public int Id { get; set; }
         public string CorNome { get; set; }
         public string? CorCodigo { get; set; }
         public string? ImagemBase64 { get; set; }

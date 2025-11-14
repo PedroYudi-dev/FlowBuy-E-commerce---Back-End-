@@ -49,6 +49,22 @@
   },
   {
     "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "GetHistorico",
+    "RelativePath": "api/Carrinho/{clienteId}/historico",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clienteId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
     "Method": "AddItem",
     "RelativePath": "api/Carrinho/{clienteId}/itens",
     "HttpMethod": "POST",
@@ -63,6 +79,53 @@
       {
         "Name": "dto",
         "Type": "api_ecommerce.Domain.DTOs.CarrinhoItemAddDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "UpdateItem",
+    "RelativePath": "api/Carrinho/{clienteId}/itens/{itemId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clienteId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "novaQuantidade",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "RemoveItem",
+    "RelativePath": "api/Carrinho/{clienteId}/itens/{itemId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clienteId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -220,6 +283,22 @@
     "Parameters": [
       {
         "Name": "produtoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.EstoqueController",
+    "Method": "GetByVariacaoId",
+    "RelativePath": "api/Estoque/variacao/{variacaoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "variacaoId",
         "Type": "System.Int32",
         "IsRequired": true
       }

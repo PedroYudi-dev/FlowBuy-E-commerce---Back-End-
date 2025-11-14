@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace api_ecommerce.Domain.Entities
 {
@@ -12,7 +13,7 @@ namespace api_ecommerce.Domain.Entities
 
         // ID do Produto:
         public int? ProdutoId { get; set; }
-        public int? ProdutoVariacaoId { get; set; } 
+        public int? ProdutoVariacaoId { get; set; }
 
 
         // Quantidade disponível:
@@ -27,9 +28,11 @@ namespace api_ecommerce.Domain.Entities
         public DateTime Data { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("ProdutoId")]
+        [JsonIgnore]
         public Produto Produto { get; set; }
 
         [ForeignKey("ProdutoVariacaoId")]
+        [JsonIgnore]
         public ProdutoVariacao? ProdutoVariacao { get; set; }
     }
 }

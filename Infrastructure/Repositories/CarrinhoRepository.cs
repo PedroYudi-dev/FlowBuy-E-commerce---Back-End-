@@ -11,6 +11,7 @@ namespace api_ecommerce.Infrastructure.Repositories
     public class CarrinhoRepository : ICarrinhoRepository
     {
         private readonly EcommerceDbContext _context;
+        private readonly CarrinhoRepository _carrinhoRepository;
         public CarrinhoRepository(EcommerceDbContext context) { _context = context; }
 
         public Carrinho ObterOuCriarCarrinhoAberto(int clienteId)
@@ -58,6 +59,29 @@ namespace api_ecommerce.Infrastructure.Repositories
         {
             _context.Carrinhos.Update(carrinho);
             _context.SaveChanges();
+        }
+
+        public void RemoveItem(CarrinhoItem item)
+        {
+            _context.CarrinhosItens.Remove(item);
+            _context.SaveChanges();
+        }
+
+        public Carrinho AtualizarQuantidade(int clienteId, int itemId, int novaQuantidade)
+        {
+            if (novaQuantidade <= 0) throw new ArgumentException("Quantidade inválida.");
+
+            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+
+            if (item == null)
+                throw new ArgumentException("Item não encontrado.");
+
+            item.Quantidade = novaQuantidade;
+            item.Subtotal = item.PrecoUnitario * novaQuantidade;
+            _carrinhoRepository.SaveChanges();
+
+            return carrinho;
         }
 
         public void SaveChanges() => _context.SaveChanges();
