@@ -1,164 +1,168 @@
 
-using System;
-using System.Linq;
-using api_ecommerce.Domain.DTOs;
-using api_ecommerce.Domain.Entities;
-using api_ecommerce.Domain.Interfaces.Repositories;
-using api_ecommerce.Domain.Interfaces.Services;
+//using System;
+//using System.Linq;
+//using api_ecommerce.Domain.DTOs;
+//using api_ecommerce.Domain.Entities;
+//using api_ecommerce.Domain.Interfaces.Repositories;
+//using api_ecommerce.Domain.Interfaces.Services;
 
-namespace api_ecommerce.Domain.Services
-{
-    public class CarrinhoService : ICarrinhoService
-    {
-        private readonly ICarrinhoRepository _carrinhoRepository;
-        private readonly IClienteRepository _clienteRepository;
-        private readonly IProdutoRepository _produtoRepository;
-        private readonly IEstoqueRepository _estoqueRepository;
-        private readonly IVendaRepository _vendaRepository;
+//namespace api_ecommerce.Domain.Services
+//{
+//    public class CarrinhoService : ICarrinhoService
+//    {
+//        private readonly ICarrinhoRepository _carrinhoRepository;
+//        private readonly IClienteRepository _clienteRepository;
+//        private readonly IProdutoRepository _produtoRepository;
+//        private readonly IEstoqueRepository _estoqueRepository;
+//        private readonly IVendaRepository _vendaRepository;
+//        private readonly IProdutoVariacaoRepository _produtoVariacaoRepository;
 
-        public CarrinhoService(
-            ICarrinhoRepository carrinhoRepository,
-            IClienteRepository clienteRepository,
-            IProdutoRepository produtoRepository,
-            IEstoqueRepository estoqueRepository,
-            IVendaRepository vendaRepository)
-        {
-            _carrinhoRepository = carrinhoRepository;
-            _clienteRepository = clienteRepository;
-            _produtoRepository = produtoRepository;
-            _estoqueRepository = estoqueRepository;
-            _vendaRepository = vendaRepository;
-        }
+//        public CarrinhoService(
+//            ICarrinhoRepository carrinhoRepository,
+//            IClienteRepository clienteRepository,
+//            IProdutoRepository produtoRepository,
+//            IEstoqueRepository estoqueRepository,
+//            IVendaRepository vendaRepository,
+//            IProdutoVariacaoRepository produtoVariacaoRepository  
+//            )
+//        {
+//            _carrinhoRepository = carrinhoRepository;
+//            _clienteRepository = clienteRepository;
+//            _produtoRepository = produtoRepository;
+//            _estoqueRepository = estoqueRepository;
+//            _vendaRepository = vendaRepository;
+//            _produtoVariacaoRepository = produtoVariacaoRepository;
+//        }
 
-        public Carrinho AdicionarItem(int clienteId, int produtoId, int quantidade)
-        {
-            if (!_clienteRepository.ExisteCliente(clienteId))
-                throw new ArgumentException("Cliente não encontrado");
+//        public Carrinho AdicionarItem(int clienteId, int variacaoId)
+//        {
+//            if (!_clienteRepository.ExisteCliente(clienteId))
+//                throw new ArgumentException("Cliente não encontrado");
 
-            var produto = _produtoRepository.GetById(produtoId);
-            if (produto == null)
-                throw new ArgumentException("Produto não encontrado");
+//            // buscar variação
+//            var variacao = _produtoVariacaoRepository.GetById(variacaoId);
+//            if (variacao == null)
+//                throw new ArgumentException("Variação não encontrada");
 
-            if (quantidade <= 0) throw new ArgumentException("Quantidade inválida");
+//            // buscar estoque da variação
+//            var estoque = _estoqueRepository.GetByVariacaoId(variacaoId);
+//            if (estoque == null || estoque.QuantidadeDisponivel < 1)
+//                throw new ArgumentException("Estoque insuficiente para esta variação.");
 
-            var estoque = _estoqueRepository.GetByProdutoId(produtoId);
-            if (estoque == null || estoque.QuantidadeDisponivel < quantidade)
-                throw new ArgumentException("Estoque insuficiente para o produto selecionado.");
+//            // pegar ou criar carrinho do cliente
+//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
 
-            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+//            // verificar se já existe item dessa variação
+//            var item = carrinho.Itens.FirstOrDefault(i => i.VariacaoId == variacaoId);
 
-            // Se já existe item do mesmo produto, soma quantidade/subtotal
-            var item = carrinho.Itens.FirstOrDefault(i => i.ProdutoId == produtoId);
-            if (item == null)
-            {
-                item = new CarrinhoItem
-                {
-                    CarrinhoId = carrinho.Id,
-                    ProdutoId = produtoId,
-                    Quantidade = quantidade,
-                    PrecoUnitario = produto.Preco,
-                    Subtotal = produto.Preco * quantidade
-                };
-                _carrinhoRepository.AddItem(item);
-                carrinho.Itens.Add(item);
-            }
-            else
-            {
-                item.Quantidade += quantidade;
-                item.Subtotal = item.PrecoUnitario * item.Quantidade;
-                _carrinhoRepository.SaveChanges();
-            }
+//            if (item == null)
+//            {
+//                // cria o item com quantidade = 1
+//                item = new CarrinhoItem
+//                {
+//                    CarrinhoId = carrinho.Id,
+//                    VariacaoId = variacaoId,
+//                    Quantidade = 1,
+//                    PrecoUnitario = variacao.Preco,
+//                    Subtotal = variacao.Preco * 1
+//                };
 
-            return carrinho;
-        }
+//                _carrinhoRepository.AddItem(item);
+//                carrinho.Itens.Add(item);
+//            }
+//            else
+//            {
+//                // se quiser que NÃO some quantidade, NÃO mexemos aqui
+//                // apenas retorna o carrinho — item já existe
+//            }
 
-        public Carrinho ObterCarrinhoAberto(int clienteId)
-        {
-            if (!_clienteRepository.ExisteCliente(clienteId))
-                throw new ArgumentException("Cliente não encontrado");
-            return _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-        }
+//            return carrinho;
+//        }
 
-        public CarrinhoResumoDTO FinalizarCompra(int clienteId)
-        {
-            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-            if (carrinho.Itens.Count == 0)
-                throw new ArgumentException("Carrinho vazio.");
+//        public Carrinho ObterCarrinhoAberto(int clienteId)
+//        {
+//            if (!_clienteRepository.ExisteCliente(clienteId))
+//                throw new ArgumentException("Cliente não encontrado");
+//            return _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+//        }
 
-            decimal total = 0m;
+//        public CarrinhoResumoDTO FinalizarCompra(int clienteId)
+//        {
+//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+//            if (carrinho.Itens.Count == 0)
+//                throw new ArgumentException("Carrinho vazio.");
 
-            foreach (var item in carrinho.Itens)
-            {
-                // cria vendas individuais por item
-                var venda = new Venda
-                {
-                    ClienteId = clienteId,
-                    ProdutoId = item.ProdutoId,
-                    Quantidade = item.Quantidade,
-                    Data = DateTime.Now
-                };
-                _vendaRepository.Add(venda);
+//            decimal total = 0m;
 
-                // baixa estoque
-                var estoque = _estoqueRepository.GetByProdutoId(item.ProdutoId);
-                if (estoque != null)
-                {
-                    estoque.QuantidadeDisponivel -= item.Quantidade;
-                    _estoqueRepository.Update(estoque);
-                }
+//            foreach (var item in carrinho.Itens)
+//            {
+//                // cria vendas individuais por item
+//                var venda = new Venda
+//                {
+//                    ClienteId = clienteId,
+//                    ProdutoId = item.VariacaoId,
+//                    Quantidade = item.Quantidade,
+//                    Data = DateTime.Now
+//                };
+//                _vendaRepository.Add(venda);
 
-                total += item.Subtotal;
-            }
+//                // baixa estoque
+//                var estoque = _estoqueRepository.GetByProdutoId(item.VariacaoId);
+//                if (estoque != null)
+//                {
+//                    estoque.QuantidadeDisponivel -= item.Quantidade;
+//                    _estoqueRepository.Update(estoque);
+//                }
 
-            // marca carrinho como não exibível
-            carrinho.Exibir = "NAO";
-            _carrinhoRepository.Update(carrinho);
+//                total += item.Subtotal;
+//            }
 
-            return new CarrinhoResumoDTO
-            {
-                CarrinhoId = carrinho.Id,
-                ClienteId = clienteId,
-                Exibir = carrinho.Exibir,
-                Total = total
-            };
-        }
+//            // marca carrinho como não exibível
+//            carrinho.Exibir = "NAO";
+//            _carrinhoRepository.Update(carrinho);
 
-        public void RemoverItem(int clienteId, int itemId)
-        {
-            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+//            return new CarrinhoResumoDTO
+//            {
+//                CarrinhoId = carrinho.Id,
+//                ClienteId = clienteId,
+//                Exibir = carrinho.Exibir,
+//                Total = total
+//            };
+//        }
 
-            if (item == null)
-                throw new ArgumentException("Item não encontrado no carrinho.");
+//        public void RemoverItem(int clienteId, int itemId)
+//        {
+//            if (!_clienteRepository.ExisteCliente(clienteId))
+//                throw new ArgumentException("Cliente não encontrado");
 
-            carrinho.Itens.Remove(item);
-            _carrinhoRepository.RemoveItem(item);
-        }
+//            carrinho.Itens.Remove(item);
+//            _carrinhoRepository.RemoveItem(item);
+//        }
 
-        public Carrinho AtualizarQuantidade(int clienteId, int itemId, int novaQuantidade)
-        {
-            if (novaQuantidade <= 0) throw new ArgumentException("Quantidade inválida.");
+//        public Carrinho AtualizarQuantidade(int clienteId, int itemId, int novaQuantidade)
+//        {
+//            if (novaQuantidade <= 0) throw new ArgumentException("Quantidade inválida.");
 
-            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+//            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
 
-            if (item == null)
-                throw new ArgumentException("Item não encontrado.");
+//            if (item == null)
+//                throw new ArgumentException("Item não encontrado.");
 
-            item.Quantidade = novaQuantidade;
-            item.Subtotal = item.PrecoUnitario * novaQuantidade;
-            _carrinhoRepository.SaveChanges();
+//            item.Quantidade = novaQuantidade;
+//            item.Subtotal = item.PrecoUnitario * novaQuantidade;
+//            _carrinhoRepository.SaveChanges();
 
-            return carrinho;
-        }
+//            return carrinho;
+//        }
 
-        public IEnumerable<Carrinho> ListarCarrinhos(int clienteId, string? exibir = null)
-        {
-            if (!_clienteRepository.ExisteCliente(clienteId))
-                throw new ArgumentException("Cliente não encontrado");
+//        public IEnumerable<Carrinho> ListarCarrinhos(int clienteId, string? exibir = null)
+//        {
+//            if (!_clienteRepository.ExisteCliente(clienteId))
+//                throw new ArgumentException("Cliente não encontrado");
 
-            // reuso do repositório que já possui ListarPorCliente
-            return _carrinhoRepository.ListarPorCliente(clienteId, exibir);
-        }
-    }
-}
+//            // reuso do repositório que já possui ListarPorCliente
+//            return _carrinhoRepository.ListarPorCliente(clienteId, exibir);
+//        }
+//    }
+//}

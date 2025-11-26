@@ -33,6 +33,12 @@
     <Compile Remove="Migrations\20251109035613_Corrigindo1.Designer.cs" />
     <Compile Remove="Migrations\20251111181558_EditarProdutoPartePreço.cs" />
     <Compile Remove="Migrations\20251111181558_EditarProdutoPartePreço.Designer.cs" />
+    <Compile Remove="Migrations\20251114025600_ArrumandoEstoqueDoProduto123456.cs" />
+    <Compile Remove="Migrations\20251114025600_ArrumandoEstoqueDoProduto123456.Designer.cs" />
+    <Compile Remove="Migrations\20251118015719_AddItemAoCarrinho.cs" />
+    <Compile Remove="Migrations\20251118015719_AddItemAoCarrinho.Designer.cs" />
+    <Compile Remove="Migrations\20251125195849_AddCriandoRewiew2.cs" />
+    <Compile Remove="Migrations\20251125195849_AddCriandoRewiew2.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

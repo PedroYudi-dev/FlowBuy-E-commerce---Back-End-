@@ -40,5 +40,7 @@ namespace api_ecommerce.Domain.Entities
         public ICollection<ProdutoVariacao> Variacoes { get; set; } = new List<ProdutoVariacao>();
 
         public Estoque? Estoque { get; set; }
+        public ICollection<Review> Reviews { get; set; }
+
     }
 }

@@ -41,12 +41,15 @@ builder.Services.AddTransient<IFornecedorRepository, FornecedorRepository>();
 builder.Services.AddTransient<IProdutoRepository, ProdutoRepository>();
 builder.Services.AddTransient<IEstoqueRepository, EstoqueRepository>();
 builder.Services.AddTransient<IVendaRepository, VendaRepository>();
+builder.Services.AddTransient<IProdutoVariacaoRepository, ProdutoVariacaoRepository>();
 
 // Inje??o do servi?o de dom?nio:
 builder.Services.AddScoped<IVendaService, VendaService>();
-builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
-builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+//builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
+//builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
 builder.Services.AddScoped<ProdutoService>();
+builder.Services.AddScoped<ReviewService>();
+
 
 // Configura??o do DbContext com MySQL:
 builder.Services.AddDbContext<EcommerceDbContext>(options =>

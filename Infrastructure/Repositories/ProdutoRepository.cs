@@ -30,6 +30,7 @@ namespace api_ecommerce.Infrastructure.Repositories
                         .Include(p => p.Variacoes)
                         .ThenInclude(v => v.Estoque)
                         .Include(p => p.Estoque)
+                        .Include(p => p.Reviews)
                         .FirstOrDefault(p => p.Id == id);
         }
 

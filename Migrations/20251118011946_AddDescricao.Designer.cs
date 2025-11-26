@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251118011946_AddDescricao")]
+    partial class AddDescricao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,6 +26,69 @@ namespace api_ecommerce.Migrations
 
             MySqlModelBuilderExtensions.HasCharSet(modelBuilder, "utf8mb4");
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("api_ecommerce.Domain.Entities.Carrinho", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Exibir")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(3)
+                        .HasColumnType("varchar(3)")
+                        .HasDefaultValue("SIM");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.ToTable("Carrinhos");
+                });
+
+            modelBuilder.Entity("api_ecommerce.Domain.Entities.CarrinhoItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CarrinhoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantidade")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarrinhoId");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("CarrinhosItens");
+                });
 
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Cliente", b =>
                 {
@@ -217,39 +283,6 @@ namespace api_ecommerce.Migrations
                     b.ToTable("ProdutoVariacoes");
                 });
 
-            modelBuilder.Entity("api_ecommerce.Domain.Entities.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Comentario")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("Nota")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClienteId");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("Reviews");
-                });
-
             modelBuilder.Entity("api_ecommerce.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -313,6 +346,36 @@ namespace api_ecommerce.Migrations
                     b.ToTable("Vendas");
                 });
 
+            modelBuilder.Entity("api_ecommerce.Domain.Entities.Carrinho", b =>
+                {
+                    b.HasOne("api_ecommerce.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("api_ecommerce.Domain.Entities.CarrinhoItem", b =>
+                {
+                    b.HasOne("api_ecommerce.Domain.Entities.Carrinho", "Carrinho")
+                        .WithMany("Itens")
+                        .HasForeignKey("CarrinhoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api_ecommerce.Domain.Entities.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Carrinho");
+
+                    b.Navigation("Produto");
+                });
+
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Cliente", b =>
                 {
                     b.HasOne("api_ecommerce.Domain.Entities.User", "User")
@@ -361,25 +424,6 @@ namespace api_ecommerce.Migrations
                     b.Navigation("Produto");
                 });
 
-            modelBuilder.Entity("api_ecommerce.Domain.Entities.Review", b =>
-                {
-                    b.HasOne("api_ecommerce.Domain.Entities.Cliente", "Cliente")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("api_ecommerce.Domain.Entities.Produto", "Produto")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cliente");
-
-                    b.Navigation("Produto");
-                });
-
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Venda", b =>
                 {
                     b.HasOne("api_ecommerce.Domain.Entities.Cliente", "Cliente")
@@ -403,6 +447,11 @@ namespace api_ecommerce.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("api_ecommerce.Domain.Entities.Carrinho", b =>
+                {
+                    b.Navigation("Itens");
+                });
+
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Cliente", b =>
                 {
                     b.Navigation("Vendas");
@@ -416,8 +465,6 @@ namespace api_ecommerce.Migrations
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Produto", b =>
                 {
                     b.Navigation("Estoque");
-
-                    b.Navigation("Reviews");
 
                     b.Navigation("Variacoes");
 

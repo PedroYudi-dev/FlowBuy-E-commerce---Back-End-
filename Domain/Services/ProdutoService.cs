@@ -270,6 +270,7 @@ namespace api_ecommerce.Domain.Services
                 produto.Id,
                 produto.Nome,
                 produto.Marca,
+                produto.Descricao,
                 produto.Preco,
                 produto.FornecedorId,
                 produto.Data,

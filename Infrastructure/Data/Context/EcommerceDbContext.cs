@@ -12,9 +12,11 @@ namespace api_ecommerce.Infrastructure.Data.Context
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Estoque> Estoques { get; set; }
         public DbSet<Venda> Vendas { get; set; }
-        public DbSet<Carrinho> Carrinhos { get; set; }
-        public DbSet<CarrinhoItem> CarrinhosItens { get; set; }
+        //public DbSet<Carrinho> Carrinhos { get; set; }
+        //public DbSet<CarrinhoItem> CarrinhosItens { get; set; }
         public DbSet<ProdutoVariacao> ProdutoVariacoes { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+
 
         public EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : base(options) { }
 
@@ -42,8 +44,8 @@ namespace api_ecommerce.Infrastructure.Data.Context
             modelBuilder.Entity<Produto>().HasKey(p => p.Id);
             modelBuilder.Entity<Estoque>().HasKey(e => e.Id);
             modelBuilder.Entity<Venda>().HasKey(v => v.Id);
-            modelBuilder.Entity<Carrinho>().HasKey(c => c.Id);
-            modelBuilder.Entity<CarrinhoItem>().HasKey(i => i.Id);
+            //modelBuilder.Entity<Carrinho>().HasKey(c => c.Id);
+            //modelBuilder.Entity<CarrinhoItem>().HasKey(i => i.Id);
 
             // Relacionamentos
             modelBuilder.Entity<Cliente>()
@@ -68,10 +70,10 @@ namespace api_ecommerce.Infrastructure.Data.Context
                 .WithMany(p => p.Vendas)
                 .HasForeignKey(v => v.ProdutoId);
 
-            modelBuilder.Entity<CarrinhoItem>()
-                .HasOne(i => i.Carrinho)
-                .WithMany(c => c.Itens)
-                .HasForeignKey(i => i.CarrinhoId);
+            //modelBuilder.Entity<CarrinhoItem>()
+            //    .HasOne(i => i.Carrinho)
+            //    .WithMany(c => c.Itens)
+            //    .HasForeignKey(i => i.CarrinhoId);
 
             modelBuilder.Entity<Produto>()
                 .HasMany(p => p.Variacoes)
@@ -93,9 +95,9 @@ namespace api_ecommerce.Infrastructure.Data.Context
 
 
             // Valores padrão
-            modelBuilder.Entity<Carrinho>()
-                .Property(c => c.Exibir)
-                .HasDefaultValue("SIM");
+            //modelBuilder.Entity<Carrinho>()
+            //    .Property(c => c.Exibir)
+            //    .HasDefaultValue("SIM");
 
             base.OnModelCreating(modelBuilder);
         }
