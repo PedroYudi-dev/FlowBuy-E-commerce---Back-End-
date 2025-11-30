@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251130021250_AddCarrinhoEstoqueVariacao")]
+    partial class AddCarrinhoEstoqueVariacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,9 +324,6 @@ namespace api_ecommerce.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
@@ -368,9 +368,6 @@ namespace api_ecommerce.Migrations
 
                     b.Property<int>("QuantidadeDisponivel")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("VariacaoId")
                         .HasColumnType("int");

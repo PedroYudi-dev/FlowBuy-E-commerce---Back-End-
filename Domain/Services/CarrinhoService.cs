@@ -1,168 +1,204 @@
+using api_ecommerce.Domain.Models;
+using api_ecommerce.Domain.DTOs;
+using Microsoft.EntityFrameworkCore;
+using api_ecommerce.Infrastructure.Data.Context;
 
-//using System;
-//using System.Linq;
-//using api_ecommerce.Domain.DTOs;
-//using api_ecommerce.Domain.Entities;
-//using api_ecommerce.Domain.Interfaces.Repositories;
-//using api_ecommerce.Domain.Interfaces.Services;
+namespace api_ecommerce.Services
+{
+    public class CarrinhoService
+    {
+        private readonly EcommerceDbContext _context;
 
-//namespace api_ecommerce.Domain.Services
-//{
-//    public class CarrinhoService : ICarrinhoService
-//    {
-//        private readonly ICarrinhoRepository _carrinhoRepository;
-//        private readonly IClienteRepository _clienteRepository;
-//        private readonly IProdutoRepository _produtoRepository;
-//        private readonly IEstoqueRepository _estoqueRepository;
-//        private readonly IVendaRepository _vendaRepository;
-//        private readonly IProdutoVariacaoRepository _produtoVariacaoRepository;
+        public CarrinhoService(EcommerceDbContext context)
+        {
+            _context = context;
+        }
 
-//        public CarrinhoService(
-//            ICarrinhoRepository carrinhoRepository,
-//            IClienteRepository clienteRepository,
-//            IProdutoRepository produtoRepository,
-//            IEstoqueRepository estoqueRepository,
-//            IVendaRepository vendaRepository,
-//            IProdutoVariacaoRepository produtoVariacaoRepository  
-//            )
-//        {
-//            _carrinhoRepository = carrinhoRepository;
-//            _clienteRepository = clienteRepository;
-//            _produtoRepository = produtoRepository;
-//            _estoqueRepository = estoqueRepository;
-//            _vendaRepository = vendaRepository;
-//            _produtoVariacaoRepository = produtoVariacaoRepository;
-//        }
+        public async Task<Carrinho> GetByUsuario(int usuarioId)
+        {
+            var carrinho = await _context.Carrinhos
+                .Include(c => c.Itens)
+                .ThenInclude(i => i.Variacao)
+                .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(c => c.UsuarioId == usuarioId);
 
-//        public Carrinho AdicionarItem(int clienteId, int variacaoId)
-//        {
-//            if (!_clienteRepository.ExisteCliente(clienteId))
-//                throw new ArgumentException("Cliente não encontrado");
+            if (carrinho != null)
+            {
+                // Calcula subtotal de cada item
+                foreach (var item in carrinho.Itens)
+                {
+                    item.Subtotal = item.Preco * item.Quantidade;
+                    item.QuantidadeDisponivel = item.Variacao?.Estoque?.QuantidadeDisponivel ?? 0;
+                }
 
-//            // buscar variação
-//            var variacao = _produtoVariacaoRepository.GetById(variacaoId);
-//            if (variacao == null)
-//                throw new ArgumentException("Variação não encontrada");
+                // Calcula o total do carrinho
+                carrinho.Total = carrinho.Itens.Sum(i => i.Subtotal);
+            }
 
-//            // buscar estoque da variação
-//            var estoque = _estoqueRepository.GetByVariacaoId(variacaoId);
-//            if (estoque == null || estoque.QuantidadeDisponivel < 1)
-//                throw new ArgumentException("Estoque insuficiente para esta variação.");
+            return carrinho;
+        }
 
-//            // pegar ou criar carrinho do cliente
-//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
+        public async Task<Carrinho> AddItem(AddItemCarrinhoDTO dto)
+        {
+            var carrinho = await GetByUsuario(dto.UsuarioId);
 
-//            // verificar se já existe item dessa variação
-//            var item = carrinho.Itens.FirstOrDefault(i => i.VariacaoId == variacaoId);
+            if (carrinho == null)
+            {
+                carrinho = new Carrinho
+                {
+                    UsuarioId = dto.UsuarioId,
+                    Itens = new List<ItemCarrinho>()
+                };
+                _context.Carrinhos.Add(carrinho);
+                await _context.SaveChangesAsync();
+            }
 
-//            if (item == null)
-//            {
-//                // cria o item com quantidade = 1
-//                item = new CarrinhoItem
-//                {
-//                    CarrinhoId = carrinho.Id,
-//                    VariacaoId = variacaoId,
-//                    Quantidade = 1,
-//                    PrecoUnitario = variacao.Preco,
-//                    Subtotal = variacao.Preco * 1
-//                };
+            var produto = await _context.Produtos
+                .Include(p => p.Variacoes)
+                .FirstOrDefaultAsync(p => p.Variacoes.Any(v => v.Id == dto.VariacaoId));
 
-//                _carrinhoRepository.AddItem(item);
-//                carrinho.Itens.Add(item);
-//            }
-//            else
-//            {
-//                // se quiser que NÃO some quantidade, NÃO mexemos aqui
-//                // apenas retorna o carrinho — item já existe
-//            }
+            if (produto == null)
+                throw new Exception("Produto da variação não encontrado.");
 
-//            return carrinho;
-//        }
+            var variacao = await _context.ProdutoVariacoes.Include(v => v.Estoque).FirstOrDefaultAsync(v => v.Id == dto.VariacaoId);
+            if (variacao == null) throw new Exception("Variacao não encontrada.");
 
-//        public Carrinho ObterCarrinhoAberto(int clienteId)
-//        {
-//            if (!_clienteRepository.ExisteCliente(clienteId))
-//                throw new ArgumentException("Cliente não encontrado");
-//            return _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-//        }
+            var item = carrinho.Itens.FirstOrDefault(i => i.VariacaoId == dto.VariacaoId);
 
-//        public CarrinhoResumoDTO FinalizarCompra(int clienteId)
-//        {
-//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-//            if (carrinho.Itens.Count == 0)
-//                throw new ArgumentException("Carrinho vazio.");
+            ItemCarrinho itemCarrinho;
+            if (item != null)
+            {
+                int diferenca = dto.Quantidade;
 
-//            decimal total = 0m;
+                // Verifica se há estoque suficiente
+                if (variacao.Estoque.QuantidadeDisponivel < diferenca)
+                    throw new Exception("Estoque insuficiente");
 
-//            foreach (var item in carrinho.Itens)
-//            {
-//                // cria vendas individuais por item
-//                var venda = new Venda
-//                {
-//                    ClienteId = clienteId,
-//                    ProdutoId = item.VariacaoId,
-//                    Quantidade = item.Quantidade,
-//                    Data = DateTime.Now
-//                };
-//                _vendaRepository.Add(venda);
+                item.Quantidade += dto.Quantidade;
 
-//                // baixa estoque
-//                var estoque = _estoqueRepository.GetByProdutoId(item.VariacaoId);
-//                if (estoque != null)
-//                {
-//                    estoque.QuantidadeDisponivel -= item.Quantidade;
-//                    _estoqueRepository.Update(estoque);
-//                }
+                variacao.Estoque.QuantidadeDisponivel -= diferenca;
 
-//                total += item.Subtotal;
-//            }
+                itemCarrinho = item;
+            }
+            else
+            {
+                if (variacao.Estoque.QuantidadeDisponivel < dto.Quantidade)
+                    throw new Exception("Estoque insuficiente");
 
-//            // marca carrinho como não exibível
-//            carrinho.Exibir = "NAO";
-//            _carrinhoRepository.Update(carrinho);
+                itemCarrinho = new ItemCarrinho
+                {
+                    ProdutoId = produto.Id,
+                    VariacaoId = variacao.Id,
+                    NomeProduto = produto.Nome,
+                    Preco = variacao.Preco,
+                    Quantidade = dto.Quantidade,
+                    ImagemBase64 = variacao.ImagemBase64,
+                    CorCodigo = variacao.CorCodigo,
+                    CorNome = variacao.CorNome,
+                    QuantidadeDisponivel = variacao.Estoque?.QuantidadeDisponivel ?? 0
+                };
 
-//            return new CarrinhoResumoDTO
-//            {
-//                CarrinhoId = carrinho.Id,
-//                ClienteId = clienteId,
-//                Exibir = carrinho.Exibir,
-//                Total = total
-//            };
-//        }
+                variacao.Estoque.QuantidadeDisponivel -= dto.Quantidade;
 
-//        public void RemoverItem(int clienteId, int itemId)
-//        {
-//            if (!_clienteRepository.ExisteCliente(clienteId))
-//                throw new ArgumentException("Cliente não encontrado");
+                carrinho.Itens.Add(itemCarrinho);
+            }
 
-//            carrinho.Itens.Remove(item);
-//            _carrinhoRepository.RemoveItem(item);
-//        }
+            // Atualiza subtotal do item
+            itemCarrinho.QuantidadeDisponivel = variacao.Estoque?.QuantidadeDisponivel ?? 0;
+            itemCarrinho.Subtotal = itemCarrinho.Preco * itemCarrinho.Quantidade;
 
-//        public Carrinho AtualizarQuantidade(int clienteId, int itemId, int novaQuantidade)
-//        {
-//            if (novaQuantidade <= 0) throw new ArgumentException("Quantidade inválida.");
+            // Atualiza total do carrinho
+            carrinho.Total = carrinho.Itens.Sum(i => i.Subtotal);
 
-//            var carrinho = _carrinhoRepository.ObterOuCriarCarrinhoAberto(clienteId);
-//            var item = carrinho.Itens.FirstOrDefault(i => i.Id == itemId);
+            await _context.SaveChangesAsync();
 
-//            if (item == null)
-//                throw new ArgumentException("Item não encontrado.");
+            return carrinho;
+        }
 
-//            item.Quantidade = novaQuantidade;
-//            item.Subtotal = item.PrecoUnitario * novaQuantidade;
-//            _carrinhoRepository.SaveChanges();
+        public async Task<Carrinho> AtualizarQuantidade(UpdateQuantidadeDTO dto)
+        {
+            var item = await _context.ItensCarrinho
+                .Include(i => i.Carrinho)
+                .Include(i => i.Variacao)
+                    .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(i => i.Id == dto.ItemCarrinhoId);
 
-//            return carrinho;
-//        }
+            if (item == null)
+                throw new Exception("Item não encontrado.");
 
-//        public IEnumerable<Carrinho> ListarCarrinhos(int clienteId, string? exibir = null)
-//        {
-//            if (!_clienteRepository.ExisteCliente(clienteId))
-//                throw new ArgumentException("Cliente não encontrado");
+            int diferenca = dto.Quantidade - item.Quantidade;
 
-//            // reuso do repositório que já possui ListarPorCliente
-//            return _carrinhoRepository.ListarPorCliente(clienteId, exibir);
-//        }
-//    }
-//}
+            if (diferenca > 0 && item.Variacao.Estoque.QuantidadeDisponivel < diferenca)
+                throw new Exception("Estoque insuficiente");
+
+            // Atualiza a quantidade
+            item.Quantidade = dto.Quantidade;
+            
+            item.Variacao.Estoque.QuantidadeDisponivel -= diferenca;
+
+            // Atualiza subtotal do item
+            item.Subtotal = item.Preco * item.Quantidade;
+            item.QuantidadeDisponivel = item.Variacao?.Estoque?.QuantidadeDisponivel ?? 0;
+
+            await _context.SaveChangesAsync();
+
+            // Recarrega o carrinho completo
+            var carrinho = await _context.Carrinhos
+                .Include(c => c.Itens)
+                .ThenInclude(i => i.Variacao)
+                        .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(c => c.Id == item.CarrinhoId);
+
+            if (carrinho != null)
+            {
+                foreach (var i in carrinho.Itens)
+                {
+                    i.Subtotal = i.Preco * i.Quantidade;
+                    i.QuantidadeDisponivel = i.Variacao?.Estoque?.QuantidadeDisponivel ?? 0;
+                }
+                carrinho.Total = carrinho.Itens.Sum(i => i.Subtotal);
+            }
+
+            return carrinho;
+        }
+
+        public async Task<bool> RemoverItem(int itemId)
+        {
+            var item = await _context.ItensCarrinho
+                .Include(i => i.Variacao)
+                    .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(i => i.Id == itemId);
+
+            if (item == null) return false;
+
+            // Restaurar estoque
+            if (item.Variacao?.Estoque != null)
+            {
+                item.Variacao.Estoque.QuantidadeDisponivel += item.Quantidade;
+            }
+
+            // Remove o item do carrinho
+            _context.ItensCarrinho.Remove(item);
+
+            // Atualiza subtotal e total do carrinho
+            var carrinho = await _context.Carrinhos
+                .Include(c => c.Itens)
+                    .ThenInclude(i => i.Variacao)
+                        .ThenInclude(v => v.Estoque)
+                .FirstOrDefaultAsync(c => c.Id == item.CarrinhoId);
+
+            if (carrinho != null)
+            {
+                foreach (var i in carrinho.Itens.Where(i => i.Id != itemId))
+                {
+                    i.Subtotal = i.Preco * i.Quantidade;
+                    i.QuantidadeDisponivel = i.Variacao?.Estoque?.QuantidadeDisponivel ?? 0;
+                }
+                carrinho.Total = carrinho.Itens.Where(i => i.Id != itemId).Sum(i => i.Subtotal);
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+    }
+}

@@ -39,6 +39,14 @@
     <Compile Remove="Migrations\20251118015719_AddItemAoCarrinho.Designer.cs" />
     <Compile Remove="Migrations\20251125195849_AddCriandoRewiew2.cs" />
     <Compile Remove="Migrations\20251125195849_AddCriandoRewiew2.Designer.cs" />
+    <Compile Remove="Migrations\20251129201305_AddCarrinhoEstoqueImagem3.cs" />
+    <Compile Remove="Migrations\20251129201305_AddCarrinhoEstoqueImagem3.Designer.cs" />
+    <Compile Remove="Migrations\20251130015125_AddCarrinhoEstoqueImagem4.cs" />
+    <Compile Remove="Migrations\20251130015125_AddCarrinhoEstoqueImagem4.Designer.cs" />
+    <Compile Remove="Migrations\20251130015733_AddCarrinhoEstoqueImagem5.cs" />
+    <Compile Remove="Migrations\20251130015733_AddCarrinhoEstoqueImagem5.Designer.cs" />
+    <Compile Remove="Migrations\20251130020737_AddCarrinhoEstoque.cs" />
+    <Compile Remove="Migrations\20251130020737_AddCarrinhoEstoque.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

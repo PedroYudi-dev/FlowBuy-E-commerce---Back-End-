@@ -16,6 +16,70 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "Delete",
+    "RelativePath": "api/Carrinho/{itemId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "itemId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "Get",
+    "RelativePath": "api/Carrinho/{usuarioId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "usuarioId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "Add",
+    "RelativePath": "api/Carrinho/add",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "api_ecommerce.Domain.DTOs.AddItemCarrinhoDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api_ecommerce.Controllers.CarrinhoController",
+    "Method": "Update",
+    "RelativePath": "api/Carrinho/update",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "api_ecommerce.Domain.DTOs.UpdateQuantidadeDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "api_ecommerce.Controllers.ClienteController",
     "Method": "GetAll",
     "RelativePath": "api/Cliente",

@@ -7,6 +7,7 @@ using api_ecommerce.Domain.Services;
 using api_ecommerce.Infrastructure.Repositories;
 using api_ecommerce.Infrastructure.Data.Context;
 using System.Text.Json.Serialization;
+using api_ecommerce.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,8 +46,7 @@ builder.Services.AddTransient<IProdutoVariacaoRepository, ProdutoVariacaoReposit
 
 // Inje??o do servi?o de dom?nio:
 builder.Services.AddScoped<IVendaService, VendaService>();
-//builder.Services.AddScoped<ICarrinhoRepository, CarrinhoRepository>();
-//builder.Services.AddScoped<ICarrinhoService, CarrinhoService>();
+builder.Services.AddScoped<CarrinhoService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<ReviewService>();
 

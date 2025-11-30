@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_ecommerce.Infrastructure.Data.Context;
 
@@ -11,9 +12,11 @@ using api_ecommerce.Infrastructure.Data.Context;
 namespace api_ecommerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129140638_AddCarrinho")]
+    partial class AddCarrinho
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,9 +324,6 @@ namespace api_ecommerce.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(65,30)");
-
                     b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
@@ -343,16 +343,6 @@ namespace api_ecommerce.Migrations
                     b.Property<int>("CarrinhoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CorCodigo")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CorNome")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ImagemBase64")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("NomeProduto")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -366,20 +356,9 @@ namespace api_ecommerce.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuantidadeDisponivel")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<int>("VariacaoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CarrinhoId");
-
-                    b.HasIndex("VariacaoId");
 
                     b.ToTable("ItensCarrinho");
                 });
@@ -482,15 +461,7 @@ namespace api_ecommerce.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api_ecommerce.Domain.Entities.ProdutoVariacao", "Variacao")
-                        .WithMany()
-                        .HasForeignKey("VariacaoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Carrinho");
-
-                    b.Navigation("Variacao");
                 });
 
             modelBuilder.Entity("api_ecommerce.Domain.Entities.Cliente", b =>

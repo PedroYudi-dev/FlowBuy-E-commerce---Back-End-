@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using api_ecommerce.Domain.Entities;
+using api_ecommerce.Domain.Models;
 
 namespace api_ecommerce.Infrastructure.Data.Context
 {
@@ -12,8 +13,9 @@ namespace api_ecommerce.Infrastructure.Data.Context
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Estoque> Estoques { get; set; }
         public DbSet<Venda> Vendas { get; set; }
-        //public DbSet<Carrinho> Carrinhos { get; set; }
-        //public DbSet<CarrinhoItem> CarrinhosItens { get; set; }
+        public DbSet<Carrinho> Carrinhos { get; set; }
+        public DbSet<ItemCarrinho> ItensCarrinho { get; set; }
+
         public DbSet<ProdutoVariacao> ProdutoVariacoes { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
@@ -70,10 +72,10 @@ namespace api_ecommerce.Infrastructure.Data.Context
                 .WithMany(p => p.Vendas)
                 .HasForeignKey(v => v.ProdutoId);
 
-            //modelBuilder.Entity<CarrinhoItem>()
-            //    .HasOne(i => i.Carrinho)
-            //    .WithMany(c => c.Itens)
-            //    .HasForeignKey(i => i.CarrinhoId);
+            modelBuilder.Entity<Carrinho>()
+                .HasMany(c => c.Itens)
+                .WithOne(i => i.Carrinho)
+                .HasForeignKey(i => i.CarrinhoId);
 
             modelBuilder.Entity<Produto>()
                 .HasMany(p => p.Variacoes)

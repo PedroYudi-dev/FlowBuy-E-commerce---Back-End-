@@ -715,12 +715,6 @@ D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommer
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.build.json
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.development.json
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.api_ecommerce.Microsoft.AspNetCore.StaticWebAssets.props
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.api_ecommerce.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.build.api_ecommerce.props
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.api_ecommerce.props
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.api_ecommerce.props
-D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.pack.json
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\api_ecom.10265FD0.Up2Date
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\api_ecommerce.dll
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\refint\api_ecommerce.dll
@@ -733,4 +727,10 @@ D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommer
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\api_ecommerce.sourcelink.json
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.api_ecommerce.Microsoft.AspNetCore.StaticWebAssets.props
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.api_ecommerce.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.build.api_ecommerce.props
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.api_ecommerce.props
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.api_ecommerce.props
+D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.pack.json
 D:\2025.08.25-25_Aula_-_API_Ecommerce_-_Banco_de_Dados\api_ecommerce\api_ecommerce\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
